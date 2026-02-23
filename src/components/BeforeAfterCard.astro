@@ -23,19 +23,19 @@ const sliderId = `ba-${pair.id}`;
   <div class="relative overflow-hidden rounded-2xl border border-[rgba(111,73,64,0.28)]" style="--position: 50%;" data-ba-viewport>
     <div class="relative aspect-[4/5] w-full bg-[#140d0b]">
       <img
-        src={pair.beforeSrc}
-        alt={pair.beforeAlt[lang]}
+        src={pair.afterSrc}
+        alt={pair.afterAlt[lang]}
         loading="lazy"
         class="h-full w-full object-cover"
-        onerror="this.src='/images/effects/placeholder-before.svg'"
+        onerror="this.src='/images/effects/placeholder-after.svg'"
       />
       <div class="absolute inset-0 overflow-hidden" style="clip-path: inset(0 calc(100% - var(--position)) 0 0);">
         <img
-          src={pair.afterSrc}
-          alt={pair.afterAlt[lang]}
+          src={pair.beforeSrc}
+          alt={pair.beforeAlt[lang]}
           loading="lazy"
           class="h-full w-full object-cover"
-          onerror="this.src='/images/effects/placeholder-after.svg'"
+          onerror="this.src='/images/effects/placeholder-before.svg'"
         />
       </div>
 

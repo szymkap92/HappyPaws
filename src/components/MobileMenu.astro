@@ -37,7 +37,10 @@ const basePath = `/${lang}/`;
       data-mobile-menu-close
       aria-label={messages.common.close}
     ></button>
-    <div class="absolute inset-0 flex flex-col bg-[linear-gradient(165deg,#1d130f_0%,#100a08_100%)] px-6 pb-7 pt-7">
+    <div
+      class="absolute inset-0 flex flex-col bg-[linear-gradient(165deg,#1d130f_0%,#100a08_100%)] px-6 pt-7"
+      style="padding-bottom: calc(1.75rem + env(safe-area-inset-bottom, 0px));"
+    >
       <div class="flex items-center justify-between gap-3">
         <span class="font-display text-3xl text-gradient">Happy Paws</span>
         <button class="icon-btn" type="button" data-mobile-menu-close aria-label={messages.common.close}>

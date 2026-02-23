@@ -1,5 +1,5 @@
 ---
-import { getMessages, type Lang } from '@/lib/i18n';
+import { LANGUAGES, getMessages, type Lang } from '@/lib/i18n';
 import { siteData } from '@/data/site';
 import '@/styles/global.css';
 
@@ -11,13 +11,19 @@ interface Props {
 
 const { lang, title, description } = Astro.props;
 const messages = getMessages(lang);
-const canonical = `https://happy-paws.example/${lang}/`;
+const siteUrl = Astro.site ?? new URL('https://happy-paws.example');
+const canonical = new URL(`/${lang}/`, siteUrl).toString();
+const hreflangLinks = LANGUAGES.map((code) => ({
+  code,
+  href: new URL(`/${code}/`, siteUrl).toString()
+}));
+const xDefaultHref = new URL('/pl/', siteUrl).toString();
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'PetGrooming',
   name: siteData.brandName,
-  image: 'https://happy-paws.example/icons/happy-paws-logo.svg',
+  image: new URL('/icons/happy-paws-logo.svg', siteUrl).toString(),
   telephone: siteData.phone,
   address: {
     '@type': 'PostalAddress',
@@ -42,17 +48,19 @@ const schema = {
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
+    {hreflangLinks.map((item) => <link rel="alternate" hreflang={item.code} href={item.href} />)}
+    <link rel="alternate" hreflang="x-default" href={xDefaultHref} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="https://happy-paws.example/images/og-happy-paws.svg" />
+    <meta property="og:image" content={new URL('/images/og-happy-paws.svg', siteUrl).toString()} />
     <meta property="og:url" content={canonical} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://happy-paws.example/images/og-happy-paws.svg" />
+    <meta name="twitter:image" content={new URL('/images/og-happy-paws.svg', siteUrl).toString()} />
 
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 

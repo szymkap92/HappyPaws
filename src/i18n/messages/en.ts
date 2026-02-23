@@ -1,6 +1,6 @@
 const en = {
   localeName: 'English',
-  htmlLang: 'en-US',
+  htmlLang: 'en',
   nav: {
     about: 'About',
     services: 'Services',

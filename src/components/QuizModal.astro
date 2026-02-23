@@ -91,7 +91,12 @@ const quizPayload = {
           <p class="section-kicker border-[rgba(248,212,218,0.3)] bg-[rgba(36,22,18,0.62)] text-[rgba(247,224,228,0.84)]">{modalContent.subtitle}</p>
           <h2 id="quiz-title" class="mt-3 font-display text-4xl text-[var(--text-primary)] sm:text-5xl">{modalContent.title}</h2>
         </div>
-        <button type="button" data-close-quiz class="icon-btn" aria-label={modalContent.close}>
+        <button
+          type="button"
+          data-close-quiz
+          class="icon-btn quiz-close-btn h-11 w-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(248,212,218,0.78)] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgba(24,14,11,0.95)]"
+          aria-label={modalContent.close}
+        >
           <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M6 6l12 12M18 6 6 18" stroke-linecap="round" />
           </svg>
@@ -531,7 +536,14 @@ const quizPayload = {
   });
 
   closeButtons.forEach((button) => {
-    button.addEventListener('click', () => closeModal());
+    button.addEventListener('click', () => {
+      if (button.classList.contains('is-closing')) return;
+      button.classList.add('is-closing');
+      window.setTimeout(() => {
+        button.classList.remove('is-closing');
+        closeModal();
+      }, 180);
+    });
   });
 
   backdrop?.addEventListener('click', () => closeModal());
@@ -559,6 +571,39 @@ const quizPayload = {
 </script>
 
 <style>
+  .quiz-close-btn {
+    position: relative;
+    transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease, box-shadow 170ms ease, color 170ms ease;
+    will-change: transform;
+  }
+
+  .quiz-close-btn:hover {
+    background: rgba(233, 181, 189, 0.2);
+    border-color: rgba(248, 212, 218, 0.72);
+    color: #fff7f8;
+    box-shadow: 0 0 0 1px rgba(248, 212, 218, 0.28), 0 10px 22px rgba(233, 181, 189, 0.2);
+  }
+
+  .quiz-close-btn:active {
+    opacity: 0.9;
+    transform: scale(0.96);
+  }
+
+  .quiz-close-btn svg {
+    transform: rotate(0deg) scale(1);
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+    transform-origin: center;
+  }
+
+  .quiz-close-btn:hover svg {
+    transform: rotate(45deg) scale(1.08);
+  }
+
+  .quiz-close-btn.is-closing svg {
+    opacity: 0.9;
+    transform: rotate(90deg) scale(0.9) translateX(1px);
+  }
+
   .quiz-bubble-in {
     animation: quizBubbleIn 360ms ease both;
   }

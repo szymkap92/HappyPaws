@@ -34,6 +34,21 @@ const socialLabels = {
     tiktok: 'TikTok - bald verfügbar'
   }
 }[lang];
+const mapLabels = {
+  pl: {
+    title: 'Lokalizacja salonu',
+    mapTitle: 'Mapa dojazdu Happy Paws w Dębicy'
+  },
+  en: {
+    title: 'Studio location',
+    mapTitle: 'Happy Paws location map in Debica'
+  },
+  de: {
+    title: 'Standort des Studios',
+    mapTitle: 'Standortkarte von Happy Paws in Debica'
+  }
+}[lang];
+const mapEmbedUrl = 'https://maps.google.com/maps?q=D%C4%99bica%2039-200&t=&z=13&ie=UTF8&iwloc=&output=embed';
 ---
 
 <section id="contact" class="relative section-wrap pb-20" data-section>
@@ -182,6 +197,24 @@ const socialLabels = {
           </button>
           <p data-form-status class="text-sm text-[var(--text-muted)]" role="status" aria-live="polite"></p>
         </form>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-6 max-w-6xl">
+      <div class="card-elevated rounded-3xl p-3 sm:p-4">
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
+          <p class="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">{mapLabels.title}</p>
+          <p class="text-sm text-[var(--text-secondary)]">{siteData.location}</p>
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-[var(--line)] bg-[rgba(16,10,8,0.74)]">
+          <iframe
+            title={mapLabels.mapTitle}
+            src={mapEmbedUrl}
+            class="h-[270px] w-full sm:h-[320px]"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
       </div>
     </div>
   </div>

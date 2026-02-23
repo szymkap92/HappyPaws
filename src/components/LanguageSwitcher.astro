@@ -19,7 +19,7 @@ const { lang, compact = false } = Astro.props;
           lang={code}
           aria-current={isActive ? 'page' : undefined}
           aria-label={languageNativeNames[code]}
-          class={`px-2 py-1 font-medium uppercase tracking-[0.12em] transition ${
+          class={`inline-flex min-h-[44px] items-center justify-center px-2 py-1 font-medium uppercase tracking-[0.12em] transition ${
             isActive
               ? 'text-[var(--text-primary)] underline decoration-[rgba(233,181,189,0.72)] underline-offset-4'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'

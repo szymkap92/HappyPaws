@@ -1,6 +1,6 @@
 const pl = {
   localeName: 'Polski',
-  htmlLang: 'pl-PL',
+  htmlLang: 'pl',
   nav: {
     about: 'O mnie',
     services: 'Usługi',

@@ -1,5 +1,6 @@
 ---
 const target = '/pl/';
+const canonical = new URL(target, Astro.site ?? new URL('https://happy-paws.example')).toString();
 ---
 
 <!doctype html>
@@ -7,7 +8,7 @@ const target = '/pl/';
   <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="noindex" />
-    <link rel="canonical" href={target} />
+    <link rel="canonical" href={canonical} />
     <meta http-equiv="refresh" content={`0;url=${target}`} />
     <script is:inline>
       window.location.replace('/pl/');
