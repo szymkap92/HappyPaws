@@ -1,0 +1,26 @@
+---
+const target = '/pl/';
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <script is:inline>
+      window.location.replace('/pl/');
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #120b08;
+      }
+    </style>
+    <title>Redirecting...</title>
+  </head>
+  <body aria-hidden="true"></body>
+</html>

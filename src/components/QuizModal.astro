@@ -1,0 +1,605 @@
+---
+import { quizCopy, quizQuestions } from '@/data/quiz';
+import { services } from '@/data/services';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  messages: Messages;
+  phone: string;
+}
+
+const { lang, messages, phone } = Astro.props;
+
+const modalContent = {
+  subtitle: messages.quiz.subtitle,
+  resultTitle: messages.quiz.resultTitle,
+  resultHint: messages.quiz.resultHint,
+  close: messages.common.close,
+  startTitle: quizCopy.startTitle[lang],
+  startDescription: quizCopy.startDescription[lang],
+  startCta: quizCopy.startCta[lang],
+  restartCta: quizCopy.restartCta[lang],
+  callCta: quizCopy.callCta[lang],
+  messageCta: quizCopy.messageCta[lang],
+  thinking: quizCopy.thinking[lang],
+  title: quizCopy.title[lang],
+  stepLabel: {
+    pl: 'Krok',
+    en: 'Step',
+    de: 'Schritt'
+  }[lang],
+  ofLabel: {
+    pl: 'z',
+    en: 'of',
+    de: 'von'
+  }[lang],
+  startHint: {
+    pl: 'około 30 sekund',
+    en: 'about 30 seconds',
+    de: 'ca. 30 Sekunden'
+  }[lang],
+  preResultStatuses: {
+    pl: [
+      'Analizuję odpowiedzi...',
+      'Porównuję potrzeby Twojego psa...',
+      'Dobieram najlepsze rekomendacje...'
+    ],
+    en: [
+      'Analyzing your answers...',
+      'Comparing your dog needs...',
+      'Selecting the best care recommendations...'
+    ],
+    de: [
+      'Analysiere Ihre Antworten...',
+      'Vergleiche die Bedürfnisse Ihres Hundes...',
+      'Wähle die besten Pflegeempfehlungen...'
+    ]
+  }[lang]
+};
+
+const quizPayload = {
+  lang,
+  questions: quizQuestions,
+  services: services.map((service) => ({
+    id: service.id,
+    name: service.name,
+    description: service.description
+  })),
+  content: modalContent,
+  phone
+};
+---
+
+<div data-quiz-modal class="pointer-events-none fixed inset-0 z-[220] opacity-0 transition duration-300" aria-hidden="true">
+  <button data-quiz-backdrop class="absolute inset-0 bg-[rgba(7,4,3,0.92)] backdrop-blur-[6px]" aria-label={modalContent.close}></button>
+
+  <div class="absolute inset-0 overflow-y-auto">
+    <div
+      class="relative mx-auto flex min-h-full w-full max-w-7xl flex-col px-4 pb-6 pt-5 sm:px-6 sm:pt-7 lg:px-8 lg:pt-8"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="quiz-title"
+    >
+      <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div class="absolute -left-20 top-10 h-72 w-72 rounded-full bg-[rgba(229,154,170,0.2)] blur-3xl"></div>
+        <div class="absolute right-0 top-0 h-80 w-80 rounded-full bg-[rgba(152,98,87,0.22)] blur-3xl"></div>
+      </div>
+
+      <header class="relative z-10 flex items-start justify-between gap-4">
+        <div>
+          <p class="section-kicker border-[rgba(248,212,218,0.3)] bg-[rgba(36,22,18,0.62)] text-[rgba(247,224,228,0.84)]">{modalContent.subtitle}</p>
+          <h2 id="quiz-title" class="mt-3 font-display text-4xl text-[var(--text-primary)] sm:text-5xl">{modalContent.title}</h2>
+        </div>
+        <button type="button" data-close-quiz class="icon-btn" aria-label={modalContent.close}>
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" stroke-linecap="round" />
+          </svg>
+        </button>
+      </header>
+
+      <div class="relative z-10 mt-5 grid gap-5 lg:grid-cols-[1.02fr_0.98fr] lg:items-start">
+        <section class="order-2 rounded-[1.6rem] border border-[var(--line)] bg-[rgba(25,15,12,0.68)] p-4 backdrop-blur lg:order-1 lg:p-5" aria-live="polite">
+          <div class="mb-3 flex items-center justify-between">
+            <p class="text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">{modalContent.subtitle}</p>
+            <div class="flex w-28 gap-1.5" data-quiz-progress-steps>
+              {
+                Array.from({ length: quizQuestions.length }).map((_, index) => (
+                  <span data-progress-item={index} class="h-1.5 flex-1 rounded-full bg-[rgba(233,181,189,0.2)]"></span>
+                ))
+              }
+            </div>
+          </div>
+
+          <div data-quiz-messages class="max-h-[38vh] space-y-3 overflow-y-auto pr-1 lg:max-h-[56vh]"></div>
+
+          <div class="mt-4 hidden items-center gap-2 rounded-2xl border border-[var(--line)] bg-[rgba(20,13,10,0.78)] px-3 py-2 text-sm text-[var(--text-secondary)]" data-quiz-thinking>
+            <span data-quiz-thinking-text>{messages.common.loading}</span>
+            <span class="ml-1 inline-flex items-center gap-1" aria-hidden="true">
+              <span class="thinking-dot"></span>
+              <span class="thinking-dot thinking-dot-delay-1"></span>
+              <span class="thinking-dot thinking-dot-delay-2"></span>
+            </span>
+          </div>
+        </section>
+
+        <section class="order-1 rounded-[1.6rem] border border-[var(--line-strong)] bg-[linear-gradient(160deg,rgba(40,24,19,0.86),rgba(18,11,9,0.9))] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.3)] lg:order-2 lg:p-6">
+          <div data-quiz-start>
+            <h3 class="font-display text-4xl leading-[1.05] text-[var(--text-primary)] sm:text-5xl">{modalContent.startTitle}</h3>
+            <p class="mt-4 max-w-xl text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">{modalContent.startDescription}</p>
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <button type="button" data-quiz-start-btn class="btn-primary">{modalContent.startCta}</button>
+              <span class="text-xs uppercase tracking-[0.16em] text-[var(--text-muted)]">{modalContent.startHint}</span>
+            </div>
+          </div>
+
+          <div data-quiz-steps class="hidden">
+            <p class="text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]" data-quiz-progress></p>
+            <h3 class="mt-3 font-display text-4xl leading-[1.08] text-[var(--text-primary)] sm:text-5xl" data-quiz-question></h3>
+            <div class="mt-6 grid gap-2.5" data-quiz-options></div>
+          </div>
+
+          <div data-quiz-results class="hidden">
+            <h3 class="font-display text-4xl text-[var(--text-primary)] sm:text-5xl">{modalContent.resultTitle}</h3>
+            <p class="mt-3 text-sm text-[var(--text-secondary)]">{modalContent.resultHint}</p>
+            <div class="mt-5 space-y-3" data-quiz-results-list></div>
+            <div class="mt-7 grid gap-2.5 sm:grid-cols-2">
+              <a href={`tel:${phone.replace(/\s+/g, '')}`} class="btn-primary text-center" data-quiz-call>{modalContent.callCta}</a>
+              <button type="button" class="btn-secondary" data-quiz-message>{modalContent.messageCta}</button>
+              <button type="button" class="btn-secondary sm:col-span-2" data-quiz-restart>{modalContent.restartCta}</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" data-quiz-payload set:html={JSON.stringify(quizPayload)}></script>
+
+<script>
+  import { scoreQuiz } from '@/lib/quizScoring';
+
+  type LocalizedValue = { pl: string; en: string; de: string };
+  type QuizWeight = { serviceId: string; points: number };
+  type QuizOption = { id: string; label: LocalizedValue; weights: QuizWeight[] };
+  type QuizQuestion = { id: string; prompt: LocalizedValue; options: QuizOption[] };
+  type QuizService = { id: string; name: LocalizedValue; description: LocalizedValue };
+  type QuizAnswer = { questionId: string; optionId: string };
+
+  type QuizPayload = {
+    lang: 'pl' | 'en' | 'de';
+    questions: QuizQuestion[];
+    services: QuizService[];
+    phone: string;
+    content: {
+      subtitle: string;
+      resultTitle: string;
+      resultHint: string;
+      close: string;
+      startTitle: string;
+      startDescription: string;
+      startCta: string;
+      restartCta: string;
+      callCta: string;
+      messageCta: string;
+      thinking: string[];
+      title: string;
+      stepLabel: string;
+      ofLabel: string;
+      startHint: string;
+      preResultStatuses: string[];
+    };
+  };
+
+  const payloadElement = document.querySelector<HTMLScriptElement>('[data-quiz-payload]');
+  const fallbackPayload: QuizPayload = {
+    lang: 'pl',
+    questions: [],
+    services: [],
+    phone: '',
+    content: {
+      subtitle: '',
+      resultTitle: '',
+      resultHint: '',
+      close: 'Close',
+      startTitle: '',
+      startDescription: '',
+      startCta: '',
+      restartCta: '',
+      callCta: '',
+      messageCta: '',
+      thinking: ['Analyzing...'],
+      title: '',
+      stepLabel: 'Step',
+      ofLabel: 'of',
+      startHint: 'about 30 seconds',
+      preResultStatuses: ['Analyzing...', 'Matching needs...', 'Preparing recommendations...']
+    }
+  };
+
+  const payload = payloadElement?.textContent
+    ? (JSON.parse(payloadElement.textContent) as QuizPayload)
+    : fallbackPayload;
+
+  const modal = document.querySelector<HTMLElement>('[data-quiz-modal]');
+  const backdrop = modal?.querySelector<HTMLElement>('[data-quiz-backdrop]');
+  const closeButtons = modal?.querySelectorAll<HTMLElement>('[data-close-quiz]') ?? [];
+  const openButtons = document.querySelectorAll<HTMLElement>('[data-open-quiz]');
+
+  const startPanel = modal?.querySelector<HTMLElement>('[data-quiz-start]');
+  const stepPanel = modal?.querySelector<HTMLElement>('[data-quiz-steps]');
+  const resultPanel = modal?.querySelector<HTMLElement>('[data-quiz-results]');
+
+  const startBtn = modal?.querySelector<HTMLButtonElement>('[data-quiz-start-btn]');
+  const restartBtn = modal?.querySelector<HTMLButtonElement>('[data-quiz-restart]');
+  const messageBtn = modal?.querySelector<HTMLButtonElement>('[data-quiz-message]');
+  const callBtn = modal?.querySelector<HTMLAnchorElement>('[data-quiz-call]');
+
+  const questionEl = modal?.querySelector<HTMLElement>('[data-quiz-question]');
+  const progressEl = modal?.querySelector<HTMLElement>('[data-quiz-progress]');
+  const optionsEl = modal?.querySelector<HTMLElement>('[data-quiz-options]');
+  const resultsList = modal?.querySelector<HTMLElement>('[data-quiz-results-list]');
+
+  const progressBars = modal?.querySelectorAll<HTMLElement>('[data-progress-item]') ?? [];
+
+  const conversationRoot = modal?.querySelector<HTMLElement>('[data-quiz-messages]');
+  const thinkingRow = modal?.querySelector<HTMLElement>('[data-quiz-thinking]');
+  const thinkingText = modal?.querySelector<HTMLElement>('[data-quiz-thinking-text]');
+
+  const focusableSelector =
+    'a[href], button:not([disabled]), textarea, input:not([disabled]), select, [tabindex]:not([tabindex="-1"])';
+
+  let previousFocus: HTMLElement | null = null;
+  let isOpen = false;
+  let stepIndex = 0;
+  let answers: QuizAnswer[] = [];
+
+  const questions = payload.questions;
+  const serviceMap = new Map(payload.services.map((service) => [service.id, service]));
+
+  const localize = (value: LocalizedValue) => value[payload.lang] ?? value.pl;
+
+  const clearNode = (node?: HTMLElement | null) => {
+    if (!node) return;
+    while (node.firstChild) node.removeChild(node.firstChild);
+  };
+
+  const updateProgress = (mode: 'start' | 'step' | 'results') => {
+    progressBars.forEach((bar, index) => {
+      const isActive =
+        mode === 'results' ? true : mode === 'start' ? false : index <= stepIndex;
+      bar.classList.toggle('bg-[rgba(233,181,189,0.82)]', isActive);
+      bar.classList.toggle('bg-[rgba(233,181,189,0.2)]', !isActive);
+    });
+  };
+
+  const addAssistantBubble = (text: string) => {
+    if (!conversationRoot) return;
+    const bubble = document.createElement('div');
+    bubble.className =
+      'quiz-bubble-in max-w-[92%] rounded-2xl border border-[var(--line)] bg-[rgba(23,14,11,0.84)] px-3 py-2.5 text-sm text-[var(--text-secondary)]';
+    bubble.textContent = text;
+    conversationRoot.appendChild(bubble);
+    bubble.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  };
+
+  const addUserBubble = (text: string) => {
+    if (!conversationRoot) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'quiz-bubble-in flex justify-end';
+
+    const bubble = document.createElement('div');
+    bubble.className =
+      'max-w-[92%] rounded-2xl border border-[rgba(233,181,189,0.48)] bg-[rgba(233,181,189,0.22)] px-3 py-2.5 text-sm text-[var(--text-primary)]';
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+    conversationRoot.appendChild(wrapper);
+    wrapper.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  };
+
+  const randomBetween = (min: number, max: number) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
+
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const setThinking = (active: boolean, text?: string) => {
+    if (!thinkingRow || !thinkingText) return;
+    if (!active) {
+      thinkingRow.classList.add('hidden');
+      return;
+    }
+
+    if (text) {
+      thinkingText.textContent = text;
+    } else {
+      const statuses = payload.content.thinking;
+      const random = statuses[Math.floor(Math.random() * statuses.length)] ?? statuses[0];
+      thinkingText.textContent = random;
+    }
+    thinkingRow.classList.remove('hidden');
+  };
+
+  const runInterStepThinking = async () => {
+    const statuses = payload.content.thinking;
+    const random = statuses[Math.floor(Math.random() * statuses.length)] ?? statuses[0];
+    setThinking(true, random);
+    await sleep(randomBetween(1600, 2200));
+    setThinking(false);
+  };
+
+  const runResultThinking = async () => {
+    const statuses = payload.content.preResultStatuses.length
+      ? payload.content.preResultStatuses
+      : payload.content.thinking;
+    const total = randomBetween(2200, 3200);
+    const segmentBase = Math.floor(total / statuses.length);
+    let elapsed = 0;
+
+    for (let i = 0; i < statuses.length; i += 1) {
+      setThinking(true, statuses[i]);
+      const isLast = i === statuses.length - 1;
+      const remaining = total - elapsed;
+      const segment = isLast
+        ? remaining
+        : Math.max(500, randomBetween(segmentBase - 180, segmentBase + 180));
+      await sleep(segment);
+      elapsed += segment;
+    }
+
+    setThinking(false);
+  };
+
+  const showPanel = (panel: 'start' | 'steps' | 'results') => {
+    startPanel?.classList.toggle('hidden', panel !== 'start');
+    stepPanel?.classList.toggle('hidden', panel !== 'steps');
+    resultPanel?.classList.toggle('hidden', panel !== 'results');
+
+    if (panel === 'start') updateProgress('start');
+    if (panel === 'steps') updateProgress('step');
+    if (panel === 'results') updateProgress('results');
+  };
+
+  const renderQuestion = () => {
+    const current = questions[stepIndex];
+    if (!current || !questionEl || !progressEl || !optionsEl) return;
+
+    questionEl.textContent = localize(current.prompt);
+    progressEl.textContent = `${payload.content.stepLabel} ${stepIndex + 1} ${payload.content.ofLabel} ${questions.length}`;
+    clearNode(optionsEl);
+
+    current.options.forEach((option) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className =
+        'rounded-2xl border border-[var(--line)] bg-[rgba(31,19,15,0.84)] px-4 py-3 text-left text-sm text-[var(--text-secondary)] transition hover:border-[var(--line-strong)] hover:text-[var(--text-primary)] sm:text-base';
+      button.textContent = localize(option.label);
+      button.addEventListener('click', () => chooseOption(option.id));
+      optionsEl.appendChild(button);
+    });
+
+    updateProgress('step');
+  };
+
+  const renderResults = () => {
+    if (!resultsList) return;
+    clearNode(resultsList);
+
+    const scored = scoreQuiz(questions, answers, payload.services, {
+      maxResults: 5,
+      minimumPercent: 55
+    });
+
+    scored.forEach((item) => {
+      const localizedService = serviceMap.get(item.id);
+      const title = localizedService?.name ? localize(localizedService.name) : item.id;
+      const description = localizedService?.description ? localize(localizedService.description) : '';
+
+      const card = document.createElement('div');
+      card.className = 'rounded-2xl border border-[var(--line)] bg-[rgba(21,14,11,0.76)] p-3.5';
+
+      const head = document.createElement('div');
+      head.className = 'mb-2 flex items-center justify-between gap-3 text-sm';
+
+      const name = document.createElement('span');
+      name.className = 'font-medium text-[var(--text-primary)]';
+      name.textContent = title;
+
+      const percent = document.createElement('span');
+      percent.className = 'text-[var(--text-muted)]';
+      percent.textContent = `${item.percent}%`;
+
+      head.append(name, percent);
+
+      const barTrack = document.createElement('div');
+      barTrack.className = 'h-2 rounded-full bg-[rgba(233,181,189,0.16)]';
+
+      const bar = document.createElement('div');
+      bar.className = 'h-full rounded-full bg-[linear-gradient(110deg,#f3c9d0,#d996a3)]';
+      bar.style.width = `${item.percent}%`;
+
+      const desc = document.createElement('p');
+      desc.className = 'mt-2 text-xs leading-relaxed text-[var(--text-secondary)]';
+      desc.textContent = description;
+
+      barTrack.appendChild(bar);
+      card.append(head, barTrack, desc);
+      resultsList.appendChild(card);
+    });
+
+    updateProgress('results');
+  };
+
+  const chooseOption = async (optionId: string) => {
+    const question = questions[stepIndex];
+    const option = question?.options.find((item) => item.id === optionId);
+    if (!question || !option) return;
+
+    answers.push({
+      questionId: question.id,
+      optionId
+    });
+
+    addUserBubble(localize(option.label));
+    const isLastStep = stepIndex >= questions.length - 1;
+
+    if (isLastStep) {
+      await runResultThinking();
+      stepIndex += 1;
+      renderResults();
+      showPanel('results');
+      return;
+    }
+
+    await runInterStepThinking();
+    stepIndex += 1;
+
+    if (stepIndex < questions.length) {
+      const nextQuestion = questions[stepIndex];
+      addAssistantBubble(localize(nextQuestion.prompt));
+      renderQuestion();
+      return;
+    }
+  };
+
+  const resetQuiz = () => {
+    stepIndex = 0;
+    answers = [];
+    clearNode(conversationRoot);
+    setThinking(false);
+    addAssistantBubble(payload.content.startDescription);
+    showPanel('start');
+  };
+
+  const startQuiz = () => {
+    stepIndex = 0;
+    answers = [];
+    clearNode(conversationRoot);
+    const firstQuestion = questions[0];
+    if (firstQuestion) addAssistantBubble(localize(firstQuestion.prompt));
+    showPanel('steps');
+    renderQuestion();
+  };
+
+  const trapFocus = (event: KeyboardEvent) => {
+    if (!isOpen || event.key !== 'Tab' || !modal) return;
+
+    const focusables = Array.from(modal.querySelectorAll<HTMLElement>(focusableSelector));
+    if (focusables.length === 0) return;
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  const openModal = () => {
+    if (!modal) return;
+    isOpen = true;
+    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    modal.setAttribute('aria-hidden', 'false');
+
+    document.body.classList.add('overflow-hidden');
+    resetQuiz();
+
+    setTimeout(() => {
+      const closeBtn = modal.querySelector<HTMLElement>('[data-close-quiz]');
+      closeBtn?.focus();
+    }, 50);
+  };
+
+  const closeModal = () => {
+    if (!modal) return;
+    isOpen = false;
+    modal.setAttribute('aria-hidden', 'true');
+    modal.classList.add('pointer-events-none', 'opacity-0');
+    document.body.classList.remove('overflow-hidden');
+    previousFocus?.focus();
+  };
+
+  openButtons.forEach((button) => {
+    button.addEventListener('click', () => openModal());
+  });
+
+  closeButtons.forEach((button) => {
+    button.addEventListener('click', () => closeModal());
+  });
+
+  backdrop?.addEventListener('click', () => closeModal());
+
+  startBtn?.addEventListener('click', startQuiz);
+  restartBtn?.addEventListener('click', startQuiz);
+
+  callBtn?.addEventListener('click', () => closeModal());
+  messageBtn?.addEventListener('click', () => {
+    closeModal();
+    window.dispatchEvent(new CustomEvent('quiz:message'));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!isOpen) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+
+    trapFocus(event);
+  });
+</script>
+
+<style>
+  .quiz-bubble-in {
+    animation: quizBubbleIn 360ms ease both;
+  }
+
+  @keyframes quizBubbleIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .thinking-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: #f4ccd3;
+    opacity: 0.45;
+    animation: thinkingPulse 1s ease-in-out infinite;
+  }
+
+  .thinking-dot-delay-1 {
+    animation-delay: 0.2s;
+  }
+
+  .thinking-dot-delay-2 {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes thinkingPulse {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+  }
+</style>

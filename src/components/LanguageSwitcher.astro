@@ -1,0 +1,33 @@
+---
+import { LANGUAGES, languageNames, languageNativeNames, type Lang } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  compact?: boolean;
+}
+
+const { lang, compact = false } = Astro.props;
+---
+
+<div class={`inline-flex items-center gap-1 ${compact ? 'text-xs' : 'text-sm'}`}>
+  {
+    LANGUAGES.map((code) => {
+      const isActive = code === lang;
+      return (
+        <a
+          href={`/${code}/`}
+          lang={code}
+          aria-current={isActive ? 'page' : undefined}
+          aria-label={languageNativeNames[code]}
+          class={`px-2 py-1 font-medium uppercase tracking-[0.12em] transition ${
+            isActive
+              ? 'text-[var(--text-primary)] underline decoration-[rgba(233,181,189,0.72)] underline-offset-4'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          {languageNames[code]}
+        </a>
+      );
+    })
+  }
+</div>

@@ -1,0 +1,86 @@
+---
+import type { BeforeAfterPair } from '@/data/gallery';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  pair: BeforeAfterPair;
+  lang: Lang;
+  messages: Messages;
+}
+
+const { pair, lang, messages } = Astro.props;
+const sliderId = `ba-${pair.id}`;
+---
+
+<article class="w-full rounded-3xl border border-[rgba(104,67,58,0.24)] bg-[rgba(255,255,255,0.9)] p-4 shadow-[0_14px_28px_rgba(0,0,0,0.08)] sm:p-5" data-ba-card>
+  <header class="mb-3 flex items-center justify-between">
+    <h3 class="font-display text-2xl text-[#2d1b16]">{pair.dogName}</h3>
+    <span class="rounded-full border border-[rgba(120,79,69,0.26)] px-3 py-1 text-xs text-[rgba(81,53,45,0.74)]">
+      {messages.common.before} / {messages.common.after}
+    </span>
+  </header>
+
+  <div class="relative overflow-hidden rounded-2xl border border-[rgba(111,73,64,0.28)]" style="--position: 50%;" data-ba-viewport>
+    <div class="relative aspect-[4/5] w-full bg-[#140d0b]">
+      <img
+        src={pair.beforeSrc}
+        alt={pair.beforeAlt[lang]}
+        loading="lazy"
+        class="h-full w-full object-cover"
+        onerror="this.src='/images/effects/placeholder-before.svg'"
+      />
+      <div class="absolute inset-0 overflow-hidden" style="clip-path: inset(0 calc(100% - var(--position)) 0 0);">
+        <img
+          src={pair.afterSrc}
+          alt={pair.afterAlt[lang]}
+          loading="lazy"
+          class="h-full w-full object-cover"
+          onerror="this.src='/images/effects/placeholder-after.svg'"
+        />
+      </div>
+
+      <div class="pointer-events-none absolute inset-y-0 z-10 w-[3px] bg-[rgba(255,245,247,0.9)]" style="left: var(--position);"></div>
+
+      <span class="absolute left-3 top-3 rounded-full bg-[rgba(16,10,8,0.78)] px-2.5 py-1 text-xs text-[var(--text-primary)]">
+        {messages.common.before}
+      </span>
+      <span class="absolute right-3 top-3 rounded-full bg-[rgba(16,10,8,0.78)] px-2.5 py-1 text-xs text-[var(--text-primary)]">
+        {messages.common.after}
+      </span>
+    </div>
+
+    <div class="border-t border-[rgba(111,73,64,0.28)] bg-[rgba(255,250,248,0.88)] px-4 py-4">
+      <label class="sr-only" for={sliderId}>Before/after slider</label>
+      <input
+        id={sliderId}
+        type="range"
+        min="0"
+        max="100"
+        value="50"
+        class="h-2.5 w-full cursor-ew-resize touch-pan-x appearance-none rounded-full bg-[rgba(215,145,157,0.42)]"
+        data-ba-slider
+      />
+    </div>
+  </div>
+</article>
+
+<style>
+  input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #f6e1e5;
+    border: 3px solid #1b120e;
+    box-shadow: 0 0 0 6px rgba(233, 181, 189, 0.22);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #f6e1e5;
+    border: 3px solid #1b120e;
+    box-shadow: 0 0 0 6px rgba(233, 181, 189, 0.22);
+  }
+</style>

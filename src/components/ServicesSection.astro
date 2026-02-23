@@ -1,0 +1,64 @@
+---
+import { services } from '@/data/services';
+import { siteData, t } from '@/data/site';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  messages: Messages;
+}
+
+const { lang, messages } = Astro.props;
+
+const seoKeywords = {
+  pl: [
+    'GROOMER DĘBICA',
+    'STRZYŻENIE PSÓW DĘBICA',
+    'TRYMOWANIE PSÓW DĘBICA',
+    'PIELĘGNACJA PSÓW DĘBICA',
+    'SALON GROOMERSKI DĘBICA'
+  ],
+  en: [
+    'DOG GROOMER DEBICA',
+    'DOG HAIRCUTS DEBICA',
+    'HAND STRIPPING DEBICA',
+    'DOG CARE STUDIO',
+    'PREMIUM PET GROOMING'
+  ],
+  de: [
+    'HUNDEPFLEGE DEBICA',
+    'HUNDESCHNITT DEBICA',
+    'TRIMMEN DEBICA',
+    'PFLEGESTUDIO FÜR HUNDE',
+    'PREMIUM HUNDEGROOMING'
+  ]
+}[lang];
+---
+
+<section id="services" class="section-wrap bg-[#fffaf6] text-[#2b1a14]" data-section>
+  <div class="container-shell">
+    <div class="mx-auto max-w-5xl text-center">
+      <p class="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-2 gap-y-1.5 rounded-full border border-[rgba(136,91,79,0.24)] bg-[rgba(248,237,231,0.9)] px-4 py-2 text-[11px] uppercase tracking-[0.18em] text-[rgba(93,60,52,0.82)] sm:text-xs">
+        {seoKeywords.join(' · ')}
+      </p>
+      <h2 class="section-heading-dark mt-6">{t(siteData.servicesSection.title, lang)}</h2>
+      <p class="section-copy-dark mx-auto">{t(siteData.servicesSection.description, lang)}</p>
+    </div>
+
+    <div class="mx-auto mt-10 grid max-w-6xl gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {
+        services.map((service) => (
+          <article class="rounded-3xl border border-[rgba(104,67,58,0.26)] bg-[rgba(255,255,255,0.88)] p-6 shadow-[0_14px_30px_rgba(0,0,0,0.08)] transition duration-300 hover:-translate-y-0.5 hover:border-[rgba(188,126,136,0.5)] hover:shadow-[0_18px_36px_rgba(0,0,0,0.12)]">
+            <p class="text-xs uppercase tracking-[0.24em] text-[#b16a76]">
+              {messages.services.fromPrice} {service.priceFrom} {messages.services.priceSuffix}
+            </p>
+            <h3 class="mt-2 font-display text-3xl leading-tight text-[#2d1b16]">{service.name[lang]}</h3>
+            <p class="mt-3 text-[15px] leading-relaxed text-[rgba(60,38,32,0.86)]">{service.description[lang]}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="mx-auto mt-7 max-w-4xl text-center text-sm text-[rgba(74,49,42,0.72)]">{messages.services.footnote}</p>
+  </div>
+</section>

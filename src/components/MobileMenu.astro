@@ -1,0 +1,138 @@
+---
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  messages: Messages;
+  phone: string;
+}
+
+const { lang, messages, phone } = Astro.props;
+const basePath = `/${lang}/`;
+---
+
+<div class="md:hidden">
+  <button
+    type="button"
+    class="icon-btn"
+    data-mobile-menu-trigger
+    aria-label={messages.common.menu}
+    aria-expanded="false"
+    aria-controls="mobile-menu-overlay"
+  >
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+    </svg>
+  </button>
+
+  <div
+    id="mobile-menu-overlay"
+    data-mobile-menu
+    class="pointer-events-none fixed inset-0 z-[140] opacity-0 transition duration-300"
+    aria-hidden="true"
+  >
+    <button
+      class="absolute inset-0 bg-[rgba(6,4,3,0.95)] backdrop-blur-[8px]"
+      data-mobile-menu-close
+      aria-label={messages.common.close}
+    ></button>
+    <div class="absolute inset-0 flex flex-col bg-[linear-gradient(165deg,#1d130f_0%,#100a08_100%)] px-6 pb-7 pt-7">
+      <div class="flex items-center justify-between gap-3">
+        <span class="font-display text-3xl text-gradient">Happy Paws</span>
+        <button class="icon-btn" type="button" data-mobile-menu-close aria-label={messages.common.close}>
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <nav aria-label="Mobile" class="mt-8 flex-1 space-y-3 overflow-y-auto pr-1">
+        <a data-mobile-menu-link href={`${basePath}#about`} class="flex min-h-[56px] items-center rounded-2xl border border-[var(--line)] bg-[rgba(36,23,18,0.66)] px-5 text-base text-[var(--text-primary)] transition hover:border-[var(--line-strong)] hover:bg-[rgba(233,181,189,0.1)]">{messages.nav.about}</a>
+        <a data-mobile-menu-link href={`${basePath}#services`} class="flex min-h-[56px] items-center rounded-2xl border border-[var(--line)] bg-[rgba(36,23,18,0.66)] px-5 text-base text-[var(--text-primary)] transition hover:border-[var(--line-strong)] hover:bg-[rgba(233,181,189,0.1)]">{messages.nav.services}</a>
+        <button data-open-quiz data-mobile-menu-close type="button" class="flex min-h-[56px] w-full items-center rounded-2xl border border-[var(--line)] bg-[rgba(36,23,18,0.66)] px-5 text-left text-base text-[var(--text-primary)] transition hover:border-[var(--line-strong)] hover:bg-[rgba(233,181,189,0.1)]">{messages.nav.matchCare}</button>
+        <a data-mobile-menu-link href={`${basePath}#effects`} class="flex min-h-[56px] items-center rounded-2xl border border-[var(--line)] bg-[rgba(36,23,18,0.66)] px-5 text-base text-[var(--text-primary)] transition hover:border-[var(--line-strong)] hover:bg-[rgba(233,181,189,0.1)]">{messages.nav.effects}</a>
+        <a data-mobile-menu-link href={`${basePath}#contact`} class="flex min-h-[56px] items-center rounded-2xl border border-[var(--line)] bg-[rgba(36,23,18,0.66)] px-5 text-base text-[var(--text-primary)] transition hover:border-[var(--line-strong)] hover:bg-[rgba(233,181,189,0.1)]">{messages.nav.contact}</a>
+      </nav>
+
+      <div class="mt-6 space-y-4 border-t border-[var(--line)] pt-5">
+        <a href={`tel:${phone.replace(/\s+/g, '')}`} class="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+          <span class="h-2 w-2 rounded-full bg-blush"></span>
+          {phone}
+        </a>
+        <a data-mobile-menu-link href={`${basePath}#contact`} class="btn-primary w-full min-h-[52px]">{messages.nav.book}</a>
+        <LanguageSwitcher lang={lang} compact />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const trigger = document.querySelector<HTMLButtonElement>('[data-mobile-menu-trigger]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+
+  if (trigger && menu) {
+    if (menu.parentElement !== document.body) {
+      document.body.appendChild(menu);
+    }
+
+    const closers = menu.querySelectorAll<HTMLElement>('[data-mobile-menu-close], [data-mobile-menu-link]');
+    let savedScrollY = 0;
+
+    const lockBody = () => {
+      savedScrollY = window.scrollY;
+      document.body.classList.add('overflow-hidden');
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${savedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    };
+
+    const unlockBody = () => {
+      document.body.classList.remove('overflow-hidden');
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, savedScrollY);
+    };
+
+    const close = () => {
+      menu.classList.add('pointer-events-none', 'opacity-0');
+      menu.setAttribute('aria-hidden', 'true');
+      trigger.setAttribute('aria-expanded', 'false');
+      unlockBody();
+    };
+
+    const open = () => {
+      menu.classList.remove('pointer-events-none', 'opacity-0');
+      menu.setAttribute('aria-hidden', 'false');
+      trigger.setAttribute('aria-expanded', 'true');
+      lockBody();
+    };
+
+    trigger.addEventListener('click', () => {
+      if (menu.classList.contains('pointer-events-none')) {
+        open();
+      } else {
+        close();
+      }
+    });
+
+    closers.forEach((item) => item.addEventListener('click', close));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.classList.contains('pointer-events-none')) close();
+    });
+
+    const onResize = () => {
+      if (window.innerWidth >= 768 && !menu.classList.contains('pointer-events-none')) {
+        close();
+      }
+    };
+
+    window.addEventListener('resize', onResize);
+  }
+</script>

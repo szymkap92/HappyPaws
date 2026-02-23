@@ -1,0 +1,91 @@
+---
+import { siteData, t } from '@/data/site';
+import type { Lang } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const eyebrow = {
+  pl: 'Poznaj Happy Paws',
+  en: 'Meet Happy Paws',
+  de: 'Lernen Sie Happy Paws kennen'
+}[lang];
+
+const paragraphs = {
+  pl: [
+    'Mam na imię Anna i prowadzę Happy Paws - spokojną przestrzeń pielęgnacji psów w Dębicy, stworzoną z myślą o komforcie pupila i opiekuna.',
+    'Każdą wizytę planuję bez pośpiechu. Dobieram pielęgnację do rodzaju sierści, temperamentu psa i oczekiwanego efektu, żeby metamorfoza była estetyczna, ale przede wszystkim bezpieczna.',
+    'Wspólnie ustalamy najlepszy plan pielęgnacji - od pierwszej wizyty szczeniaka po regularną pielęgnację dorosłych psów.'
+  ],
+  en: [
+    'My name is Anna and I run Happy Paws, a calm dog grooming space in Debica designed around comfort for both pets and owners.',
+    'Every appointment is unhurried. I tailor grooming to coat type, dog temperament and expected result, so the final look is elegant and safe.',
+    'Together we choose the best care plan - from first puppy visits to regular maintenance grooming.'
+  ],
+  de: [
+    'Ich heiße Anna und führe Happy Paws - einen ruhigen Hundepflegeort in Debica, der auf den Komfort von Hund und Halter ausgerichtet ist.',
+    'Jeder Termin verläuft ohne Hektik. Ich passe die Pflege an Felltyp, Temperament und gewünschtes Ergebnis an, damit der Look schön und sicher ist.',
+    'Gemeinsam wählen wir den passenden Pflegeplan - vom ersten Welpentermin bis zur regelmäßigen Fellpflege.'
+  ]
+}[lang];
+
+const quote = {
+  pl: 'Najważniejsze jest dla mnie spokojne doświadczenie psa i zaufanie opiekuna.',
+  en: 'My priority is a calm experience for your dog and trust for every owner.',
+  de: 'Mein Fokus liegt auf einer ruhigen Erfahrung für den Hund und Vertrauen für den Halter.'
+}[lang];
+
+const imageAlt = {
+  pl: 'Anna podczas delikatnej pielęgnacji psa w salonie Happy Paws',
+  en: 'Anna providing gentle dog grooming in Happy Paws studio',
+  de: 'Anna bei der sanften Hundepflege im Happy Paws Studio'
+}[lang];
+---
+
+<section id="about" class="section-wrap bg-[#f7f1eb] text-[#2b1a14]" data-section>
+  <div class="container-shell">
+    <div class="mx-auto max-w-6xl">
+      <div class="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <div>
+          <p class="section-kicker border-[rgba(90,56,48,0.24)] bg-[rgba(255,255,255,0.55)] text-[rgba(84,52,46,0.8)]">{eyebrow}</p>
+          <h2 class="section-heading-dark mt-5">{t(siteData.about.title, lang)}</h2>
+          <div class="section-copy-dark mt-6 max-w-2xl space-y-4">
+            {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+
+          <ul class="mt-8 grid gap-3 sm:grid-cols-2">
+            {
+              siteData.about.points.map((point) => (
+                <li class="rounded-2xl border border-[rgba(93,59,51,0.2)] bg-[rgba(255,255,255,0.64)] px-4 py-3 text-sm font-medium text-[rgba(53,33,27,0.9)]">
+                  {t(point, lang)}
+                </li>
+              ))
+            }
+          </ul>
+
+          <blockquote class="mt-8 rounded-2xl border border-[rgba(100,64,56,0.18)] bg-[rgba(255,245,239,0.9)] px-5 py-4 text-sm italic text-[rgba(59,38,32,0.86)] sm:text-base">
+            "{quote}"
+          </blockquote>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <figure class="relative overflow-hidden rounded-[1.6rem] border border-[rgba(92,58,50,0.26)] bg-[rgba(255,255,255,0.72)] p-3 shadow-[0_16px_34px_rgba(0,0,0,0.11)]">
+            <img
+              src="/images/about-anna.jpeg"
+              alt={imageAlt}
+              loading="lazy"
+              class="h-[360px] w-full rounded-[1.2rem] object-cover object-center sm:h-[430px] lg:h-[510px]"
+              onerror="this.src='/images/effects/placeholder-after.svg'"
+            />
+          </figure>
+          <p class="text-xs uppercase tracking-[0.22em] text-[rgba(79,50,43,0.74)]">
+            {siteData.brandName} · {siteData.location} · {siteData.hours}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#1A120E"/>
+  <rect x="24" y="24" width="752" height="552" rx="28" stroke="#A6757C" stroke-width="2" stroke-dasharray="10 10"/>
+  <text x="50%" y="44%" fill="#F6E3E7" font-size="44" text-anchor="middle" font-family="Manrope, sans-serif">PO / AFTER / NACHHER</text>
+  <text x="50%" y="55%" fill="#D8B7BC" font-size="24" text-anchor="middle" font-family="Manrope, sans-serif">Podmień plik w data/gallery.ts</text>
+</svg>

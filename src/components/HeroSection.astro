@@ -1,0 +1,38 @@
+---
+import { siteData, t } from '@/data/site';
+import type { Lang } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const basePath = `/${lang}/`;
+---
+
+<section id="hero" class="relative overflow-hidden pb-24 pt-40 sm:pb-28 sm:pt-44" data-section>
+  <div class="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[rgba(233,181,189,0.22)] blur-3xl" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-[rgba(148,99,86,0.28)] blur-3xl" aria-hidden="true"></div>
+  <div class="container-shell">
+    <div class="mx-auto max-w-4xl text-center">
+      <div class="reveal-up">
+        <p class="section-kicker mx-auto">
+          {t(siteData.hero.eyebrow, lang)}
+        </p>
+        <h1 class="mt-7 font-display text-5xl font-semibold leading-[1.04] tracking-tight text-sand sm:text-6xl lg:text-7xl">
+          {t(siteData.hero.title, lang)}
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+          {t(siteData.hero.description, lang)}
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+          <a href={`${basePath}#contact`} class="btn-primary">{t(siteData.hero.primaryCta, lang)}</a>
+          <button type="button" data-open-quiz class="btn-secondary">{t(siteData.hero.secondaryCta, lang)}</button>
+        </div>
+
+        <p class="mt-4 text-sm text-[var(--text-muted)]">{t(siteData.hero.hint, lang)}</p>
+      </div>
+    </div>
+  </div>
+</section>

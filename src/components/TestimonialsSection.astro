@@ -1,0 +1,63 @@
+---
+import { siteData, t } from '@/data/site';
+import { testimonials } from '@/data/testimonials';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  messages: Messages;
+}
+
+const { lang, messages } = Astro.props;
+
+const viewAllLabel = {
+  pl: 'Zobacz wszystkie opinie',
+  en: 'See all reviews',
+  de: 'Alle Bewertungen ansehen'
+}[lang];
+---
+
+<section id="testimonials" class="section-wrap bg-[#fffdfb] text-[#2b1a14]" data-section>
+  <div class="container-shell">
+    <div class="mx-auto max-w-4xl text-center">
+      <h2 class="section-heading-dark">{t(siteData.testimonialsSection.title, lang)}</h2>
+      <p class="section-copy-dark mx-auto">{t(siteData.testimonialsSection.description, lang)}</p>
+    </div>
+
+    <div class="mx-auto mt-8 grid max-w-6xl gap-4 md:grid-cols-3">
+      {
+        testimonials.map((item) => (
+          <article class="flex h-full flex-col rounded-3xl border border-[rgba(106,69,60,0.22)] bg-[rgba(255,255,255,0.86)] p-5 shadow-[0_14px_30px_rgba(0,0,0,0.07)]">
+            <p class="sr-only">{messages.testimonials.starsLabel}: {item.rating}/5</p>
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex gap-1 text-[#d98f9d]" aria-hidden="true">
+                {Array.from({ length: item.rating }).map(() => (
+                  <svg viewBox="0 0 20 20" class="h-4 w-4 fill-current">
+                    <path d="M10 1.5 12.7 7l6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L1.3 7.9l6-.9L10 1.5Z" />
+                  </svg>
+                ))}
+              </div>
+              <img src="/icons/google-g.svg" alt="Google" class="h-4 w-4 shrink-0" loading="lazy" />
+            </div>
+            <p class="mt-4 flex-1 text-sm leading-relaxed text-[rgba(69,44,37,0.84)]">"{item.quote[lang]}"</p>
+            <p class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f1d17]">
+              {item.petName} - <span class="text-[rgba(83,54,46,0.7)]">{item.guardian}</span>
+              <img src="/icons/google-g.svg" alt="" class="h-3.5 w-3.5 shrink-0" loading="lazy" aria-hidden="true" />
+            </p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 text-center">
+      {/* TODO: podmień na link do profilu Google */}
+      <a
+        href="#"
+        class="inline-flex items-center gap-2 rounded-full border border-[rgba(122,80,70,0.26)] bg-[rgba(255,255,255,0.82)] px-5 py-2.5 text-sm font-semibold text-[rgba(66,43,36,0.86)] transition hover:border-[rgba(122,80,70,0.42)] hover:bg-[rgba(255,255,255,0.95)]"
+      >
+        <img src="/icons/google-g.svg" alt="" class="h-4 w-4 shrink-0" loading="lazy" aria-hidden="true" />
+        {viewAllLabel}
+      </a>
+    </div>
+  </div>
+</section>

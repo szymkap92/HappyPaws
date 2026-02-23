@@ -1,0 +1,76 @@
+---
+import { getMessages, type Lang } from '@/lib/i18n';
+import { siteData } from '@/data/site';
+import '@/styles/global.css';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+}
+
+const { lang, title, description } = Astro.props;
+const messages = getMessages(lang);
+const canonical = `https://happy-paws.example/${lang}/`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'PetGrooming',
+  name: siteData.brandName,
+  image: 'https://happy-paws.example/icons/happy-paws-logo.svg',
+  telephone: siteData.phone,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Dębica',
+    postalCode: '39-200',
+    addressCountry: 'PL'
+  },
+  openingHours: 'Mo-Su 08:00-19:00',
+  areaServed: 'Dębica',
+  priceRange: '$$'
+};
+---
+
+<!doctype html>
+<html lang={messages.htmlLang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1b120e" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://happy-paws.example/images/og-happy-paws.svg" />
+    <meta property="og:url" content={canonical} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://happy-paws.example/images/og-happy-paws.svg" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="relative antialiased">
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[999] focus:rounded-lg focus:bg-[#f6dce0] focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-[#1a120e]"
+    >
+      {messages.common.skipToContent}
+    </a>
+    <div class="noise-overlay" aria-hidden="true"></div>
+    <slot />
+  </body>
+</html>

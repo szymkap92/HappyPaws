@@ -1,0 +1,140 @@
+---
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import MobileMenu from '@/components/MobileMenu.astro';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  messages: Messages;
+  phone: string;
+}
+
+const { lang, messages, phone } = Astro.props;
+const basePath = `/${lang}/`;
+---
+
+<header
+  data-navbar
+  class="fixed inset-x-0 top-0 z-50 transition duration-300"
+>
+  <div class="container-shell">
+    <div
+      data-navbar-shell
+      class="mt-3 flex h-16 items-center justify-between rounded-2xl border border-transparent bg-transparent px-3 transition duration-300 md:h-[74px] md:px-4"
+    >
+      <a href={basePath} class="inline-flex items-center gap-3" aria-label="Happy Paws home">
+        <img src="/icons/happy-paws-logo.svg" width="120" height="40" alt="Happy Paws" class="h-9 w-auto" loading="eager" />
+      </a>
+
+      <nav class="hidden items-center gap-5 lg:flex" aria-label="Main navigation">
+        <a data-nav-link="about" href={`${basePath}#about`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.about}</a>
+        <a data-nav-link="services" href={`${basePath}#services`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.services}</a>
+        <button data-open-quiz type="button" class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.matchCare}</button>
+        <a data-nav-link="effects" href={`${basePath}#effects`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.effects}</a>
+        <a data-nav-link="contact" href={`${basePath}#contact`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.contact}</a>
+      </nav>
+
+      <div class="hidden items-center gap-3 lg:flex">
+        <a
+          href={`tel:${phone.replace(/\s+/g, '')}`}
+          class="px-1 py-2 text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)] transition hover:text-[var(--text-primary)]"
+        >
+          {phone}
+        </a>
+        <a
+          href={`${basePath}#contact`}
+          class="inline-flex items-center justify-center rounded-lg border border-[rgba(248,212,218,0.44)] bg-transparent px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-primary)] transition duration-300 hover:border-[rgba(248,212,218,0.72)] hover:bg-[rgba(233,181,189,0.22)] hover:shadow-[0_10px_24px_rgba(233,181,189,0.2)]"
+        >
+          {messages.nav.book}
+        </a>
+        <LanguageSwitcher lang={lang} />
+      </div>
+
+      <MobileMenu lang={lang} messages={messages} phone={phone} />
+    </div>
+  </div>
+</header>
+
+<script>
+  const navbar = document.querySelector<HTMLElement>('[data-navbar]');
+
+  const setScrolledState = () => {
+    if (!navbar) return;
+    if (window.scrollY > 14) {
+      navbar.classList.add('is-scrolled');
+    } else {
+      navbar.classList.remove('is-scrolled');
+    }
+  };
+
+  setScrolledState();
+  window.addEventListener('scroll', setScrolledState, { passive: true });
+
+  if (navbar) {
+    const shell = navbar.querySelector<HTMLElement>('[data-navbar-shell]');
+    const links = navbar.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+    const sections = document.querySelectorAll<HTMLElement>('[data-section]');
+
+    const linkById = new Map<string, HTMLAnchorElement>();
+    links.forEach((link) => {
+      const id = link.dataset.navLink;
+      if (id) linkById.set(id, link);
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const active = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (!active) return;
+
+        const activeId = active.target.id;
+        links.forEach((link) => {
+          const isActive = link.dataset.navLink === activeId;
+          link.classList.toggle('is-active', isActive);
+        });
+      },
+      {
+        rootMargin: '-40% 0px -50% 0px',
+        threshold: [0.2, 0.45, 0.6]
+      }
+    );
+
+    sections.forEach((section) => {
+      if (linkById.has(section.id)) observer.observe(section);
+    });
+
+    if (shell) {
+      const toggleShell = () => {
+        if (window.scrollY > 12) {
+          shell.classList.add('shell-scrolled');
+        } else {
+          shell.classList.remove('shell-scrolled');
+        }
+      };
+
+      toggleShell();
+      window.addEventListener('scroll', toggleShell, { passive: true });
+    }
+  }
+</script>
+
+<style>
+  [data-navbar].is-scrolled {
+    background: rgba(11, 7, 6, 0.35);
+    backdrop-filter: blur(4px);
+  }
+
+  [data-navbar-shell].shell-scrolled {
+    border-color: rgba(248, 212, 218, 0.24);
+    background: rgba(18, 11, 9, 0.68);
+    backdrop-filter: blur(12px);
+  }
+
+  [data-nav-link].is-active {
+    border-bottom-color: rgba(233, 181, 189, 0.55);
+    color: var(--text-primary);
+    opacity: 1;
+  }
+</style>

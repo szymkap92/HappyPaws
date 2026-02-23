@@ -1,0 +1,77 @@
+---
+import AboutSection from '@/components/AboutSection.astro';
+import ContactSection from '@/components/ContactSection.astro';
+import EffectsSection from '@/components/EffectsSection.astro';
+import FloatingQuizCTA from '@/components/FloatingQuizCTA.astro';
+import HeroSection from '@/components/HeroSection.astro';
+import Navbar from '@/components/Navbar.astro';
+import QuizModal from '@/components/QuizModal.astro';
+import ServicesSection from '@/components/ServicesSection.astro';
+import TestimonialsSection from '@/components/TestimonialsSection.astro';
+import MainLayout from '@/layouts/MainLayout.astro';
+import { siteData, t } from '@/data/site';
+import { LANGUAGES, getMessages, type Lang } from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+const messages = getMessages(lang);
+const seo = siteData.seo[lang];
+const year = new Date().getFullYear();
+const footerCopy = {
+  pl: {
+    tagline: 'Spokojna, premium pielęgnacja psów',
+    location: 'Dębica 39-200',
+    quick: 'Szybki kontakt'
+  },
+  en: {
+    tagline: 'Calm premium dog grooming',
+    location: 'Debica 39-200',
+    quick: 'Quick contact'
+  },
+  de: {
+    tagline: 'Ruhige Premium-Hundepflege',
+    location: 'Debica 39-200',
+    quick: 'Schneller Kontakt'
+  }
+}[lang];
+---
+
+<MainLayout lang={lang} title={seo.title} description={seo.description}>
+  <Navbar lang={lang} messages={messages} phone={siteData.phone} />
+
+  <main id="content" class="relative z-10">
+    <HeroSection lang={lang} />
+    <AboutSection lang={lang} />
+    <ServicesSection lang={lang} messages={messages} />
+    <EffectsSection lang={lang} messages={messages} />
+    <TestimonialsSection lang={lang} messages={messages} />
+    <ContactSection lang={lang} messages={messages} />
+  </main>
+
+  <footer class="relative z-10 border-t border-[rgba(248,212,218,0.2)] bg-[rgba(13,8,7,0.9)] py-10 sm:py-12">
+    <div class="container-shell">
+      <div class="mx-auto max-w-6xl rounded-[2rem] border border-[var(--line)] bg-[rgba(24,15,12,0.78)] px-6 py-7 backdrop-blur sm:px-8 sm:py-8">
+        <div class="flex flex-col items-center gap-3 text-center">
+          <p class="font-display text-4xl text-[var(--text-primary)] sm:text-5xl">{siteData.brandName}</p>
+          <p class="max-w-2xl text-sm text-[var(--text-secondary)]">{footerCopy.tagline}</p>
+        </div>
+
+        <div class="mt-8 grid gap-5 border-t border-[var(--line)] pt-6 text-sm text-[var(--text-muted)] sm:grid-cols-3 sm:items-center">
+          <p class="text-center sm:text-left">{t(siteData.footer.note, lang)}</p>
+          <p class="text-center uppercase tracking-[0.12em]">{footerCopy.location}</p>
+          <p class="text-center sm:text-right">
+            {footerCopy.quick}: <a class="text-[var(--text-secondary)] hover:text-[var(--text-primary)]" href={`tel:${siteData.phone.replace(/\s+/g, '')}`}>{siteData.phone}</a>
+          </p>
+        </div>
+
+        <p class="mt-6 text-center text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">© {year} {siteData.brandName}</p>
+      </div>
+    </div>
+  </footer>
+
+  <FloatingQuizCTA lang={lang} />
+  <QuizModal lang={lang} messages={messages} phone={siteData.phone} />
+</MainLayout>

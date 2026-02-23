@@ -1,0 +1,47 @@
+---
+import BeforeAfterCard from '@/components/BeforeAfterCard.astro';
+import { galleryPairs } from '@/data/gallery';
+import { siteData, t } from '@/data/site';
+import type { Lang, Messages } from '@/lib/i18n';
+
+interface Props {
+  lang: Lang;
+  messages: Messages;
+}
+
+const { lang, messages } = Astro.props;
+---
+
+<section id="effects" class="section-wrap bg-[#f6eee7] text-[#2b1a14]" data-section>
+  <div class="container-shell">
+    <div class="mx-auto max-w-4xl text-center">
+      <h2 class="section-heading-dark">{t(siteData.effectsSection.title, lang)}</h2>
+      <p class="section-copy-dark mx-auto">{t(siteData.effectsSection.description, lang)}</p>
+    </div>
+
+    <div class="relative mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {galleryPairs.map((pair) => <BeforeAfterCard pair={pair} lang={lang} messages={messages} />)}
+    </div>
+  </div>
+</section>
+
+<script>
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-ba-card]'));
+
+  cards.forEach((card) => {
+    if (card.dataset.baInitialized === 'true') return;
+    card.dataset.baInitialized = 'true';
+
+    const slider = card.querySelector<HTMLInputElement>('[data-ba-slider]');
+    const viewport = card.querySelector<HTMLElement>('[data-ba-viewport]');
+
+    if (!slider || !viewport) return;
+
+    const update = () => {
+      viewport.style.setProperty('--position', `${slider.value}%`);
+    };
+
+    slider.addEventListener('input', update, { passive: true });
+    update();
+  });
+</script>

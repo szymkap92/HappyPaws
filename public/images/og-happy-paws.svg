@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#170F0C"/>
+  <circle cx="220" cy="130" r="200" fill="#3B2520"/>
+  <circle cx="1010" cy="70" r="180" fill="#6E4544" fill-opacity="0.32"/>
+  <rect x="70" y="70" width="1060" height="490" rx="48" stroke="#9A6F72" stroke-width="2"/>
+  <text x="130" y="290" fill="#F2D5DA" font-size="112" font-family="Cormorant Garamond, serif" font-weight="600">Happy Paws</text>
+  <text x="132" y="358" fill="#E8BBC2" font-size="36" font-family="Manrope, sans-serif">Premium Dog Grooming in Debica</text>
+</svg>
