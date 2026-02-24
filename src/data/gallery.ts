@@ -1,21 +1,30 @@
+import type { ImageMetadata } from 'astro';
 import type { LocalizedText } from '@/lib/quizScoring';
+
+import brunetBefore from '@/assets/images/effects/brunet-before.png';
+import brunetAfter from '@/assets/images/effects/brunet-after.png';
+import karmelBefore from '@/assets/images/effects/karmel-before.png';
+import karmelAfter from '@/assets/images/effects/karmel-after.png';
+import leosBefore from '@/assets/images/effects/leos-before.png';
+import leosAfter from '@/assets/images/effects/leos-after.png';
+import sniezkaBefore from '@/assets/images/effects/sniezka-before.png';
+import sniezkaAfter from '@/assets/images/effects/sniezka-after.png';
 
 export interface BeforeAfterPair {
   id: string;
   dogName: string;
-  beforeSrc: string;
-  afterSrc: string;
+  beforeSrc: ImageMetadata;
+  afterSrc: ImageMetadata;
   beforeAlt: LocalizedText;
   afterAlt: LocalizedText;
 }
 
-// TODO: Aby podmienić zdjęcia, wgraj pliki do /public/images/effects i zaktualizuj tylko ścieżki tutaj.
 export const galleryPairs: BeforeAfterPair[] = [
   {
     id: 'brunet',
     dogName: 'Brunet',
-    beforeSrc: '/images/effects/brunet-before.png',
-    afterSrc: '/images/effects/brunet-after.png',
+    beforeSrc: brunetBefore,
+    afterSrc: brunetAfter,
     beforeAlt: {
       pl: 'Brunet przed pielęgnacją',
       en: 'Brunet before grooming',
@@ -30,8 +39,8 @@ export const galleryPairs: BeforeAfterPair[] = [
   {
     id: 'karmel',
     dogName: 'Karmel',
-    beforeSrc: '/images/effects/karmel-before.png',
-    afterSrc: '/images/effects/karmel-after.png',
+    beforeSrc: karmelBefore,
+    afterSrc: karmelAfter,
     beforeAlt: {
       pl: 'Karmel przed pielęgnacją',
       en: 'Karmel before grooming',
@@ -46,8 +55,8 @@ export const galleryPairs: BeforeAfterPair[] = [
   {
     id: 'leos',
     dogName: 'Leoś',
-    beforeSrc: '/images/effects/leos-before.png',
-    afterSrc: '/images/effects/leos-after.png',
+    beforeSrc: leosBefore,
+    afterSrc: leosAfter,
     beforeAlt: {
       pl: 'Leoś przed pielęgnacją',
       en: 'Leos before grooming',
@@ -62,8 +71,8 @@ export const galleryPairs: BeforeAfterPair[] = [
   {
     id: 'sniezka',
     dogName: 'Śnieżka',
-    beforeSrc: '/images/effects/sniezka-before.png',
-    afterSrc: '/images/effects/sniezka-after.png',
+    beforeSrc: sniezkaBefore,
+    afterSrc: sniezkaAfter,
     beforeAlt: {
       pl: 'Śnieżka przed pielęgnacją',
       en: 'Snowy before grooming',

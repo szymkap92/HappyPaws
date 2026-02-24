@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import aboutAnna from '@/assets/images/about-anna.jpeg';
 import { siteData, t } from '@/data/site';
 import type { Lang } from '@/lib/i18n';
 
@@ -73,12 +75,15 @@ const imageAlt = {
 
         <div class="flex flex-col gap-4">
           <figure class="relative overflow-hidden rounded-[1.6rem] border border-[rgba(92,58,50,0.26)] bg-[rgba(255,255,255,0.72)] p-3 shadow-[0_16px_34px_rgba(0,0,0,0.11)]">
-            <img
-              src="/images/about-anna.jpeg"
+            <Image
+              src={aboutAnna}
               alt={imageAlt}
+              widths={[400, 640, 800]}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              format="webp"
+              quality={80}
               loading="lazy"
               class="h-[360px] w-full rounded-[1.2rem] object-cover object-center sm:h-[430px] lg:h-[510px]"
-              onerror="this.src='/images/effects/placeholder-after.svg'"
             />
           </figure>
           <p class="text-xs uppercase tracking-[0.22em] text-[rgba(79,50,43,0.74)]">

@@ -2,9 +2,11 @@ import type { APIRoute } from 'astro';
 
 const LANG_PATHS = ['/pl/', '/en/', '/de/'] as const;
 
+export const prerender = true;
+
 export const GET: APIRoute = ({ site }) => {
-  const base = site ?? new URL('https://happy-paws.example');
-  const lastmod = new Date().toISOString();
+  const base = site ?? new URL('https://happypawsanna.com');
+  const lastmod = '2025-02-23T00:00:00Z';
 
   const urls = LANG_PATHS.map((path) => {
     const loc = new URL(path, base).toString();
