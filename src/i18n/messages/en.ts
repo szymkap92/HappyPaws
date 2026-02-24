@@ -43,6 +43,18 @@ const en = {
   testimonials: {
     starsLabel: 'Rating'
   },
+  effects: {
+    viewAll: 'See all transformations',
+    galleryKicker: 'Transformation gallery',
+    galleryPageTitle: 'All Happy Paws transformations',
+    galleryPageDescription:
+      'This page will hold the full grooming transformation gallery. We are preparing this section now.',
+    galleryEmptyTitle: 'Gallery coming soon',
+    galleryEmptyDescription:
+      'The subpage is ready and transformation photos will be added in the next step.',
+    backToEffects: 'Back to results section',
+    backToHome: 'Back to home page'
+  },
   quiz: {
     subtitle: 'consultation quiz',
     thinkingPrefix: 'Happy Paws assistant',

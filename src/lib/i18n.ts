@@ -43,3 +43,19 @@ export function localizedPath(lang: Lang, hash = ''): string {
   const normalizedHash = hash.startsWith('#') || hash.length === 0 ? hash : `#${hash}`;
   return `/${lang}/${normalizedHash}`;
 }
+
+export const effectsShowcaseSlugs: Record<Lang, string> = {
+  pl: 'metamorfozy',
+  en: 'transformations',
+  de: 'verwandlungen'
+};
+
+export const effectsShowcasePaths: Record<Lang, string> = {
+  pl: `/pl/${effectsShowcaseSlugs.pl}/`,
+  en: `/en/${effectsShowcaseSlugs.en}/`,
+  de: `/de/${effectsShowcaseSlugs.de}/`
+};
+
+export function getEffectsShowcasePath(lang: Lang): string {
+  return effectsShowcasePaths[lang];
+}

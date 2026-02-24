@@ -43,6 +43,18 @@ const pl = {
   testimonials: {
     starsLabel: 'Ocena'
   },
+  effects: {
+    viewAll: 'Zobacz wszystkie metamorfozy',
+    galleryKicker: 'Galeria metamorfoz',
+    galleryPageTitle: 'Wszystkie metamorfozy Happy Paws',
+    galleryPageDescription:
+      'Tutaj znajdziesz pełną galerię efektów pielęgnacji. Aktualnie przygotowujemy tę sekcję.',
+    galleryEmptyTitle: 'Galeria w przygotowaniu',
+    galleryEmptyDescription:
+      'Podstrona jest gotowa, a zdjęcia metamorfoz dodamy w kolejnym kroku.',
+    backToEffects: 'Wróć do sekcji efektów',
+    backToHome: 'Wróć na stronę główną'
+  },
   quiz: {
     subtitle: 'quiz konsultacyjny',
     thinkingPrefix: 'Asystent Happy Paws',

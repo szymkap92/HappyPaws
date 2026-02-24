@@ -159,6 +159,23 @@ export const siteData = {
       description:
         'Happy Paws von Anna - ruhige, professionelle Hundepflege in Debica. Schneiden, Baden, Trimmen und kurzes Beratungsquiz.'
     }
+  } satisfies Record<Lang, SeoEntry>,
+  seoEffects: {
+    pl: {
+      title: 'Metamorfozy psów | Happy Paws Dębica',
+      description:
+        'Pełna galeria metamorfoz Happy Paws. Zobacz efekty przed i po pielęgnacji psów.'
+    },
+    en: {
+      title: 'Dog Transformations | Happy Paws Debica',
+      description:
+        'Full Happy Paws transformation gallery. Explore before and after grooming results.'
+    },
+    de: {
+      title: 'Hundeverwandlungen | Happy Paws Debica',
+      description:
+        'Vollständige Galerie der Happy Paws Verwandlungen. Sehen Sie alle Vorher-Nachher-Ergebnisse.'
+    }
   } satisfies Record<Lang, SeoEntry>
 };
 

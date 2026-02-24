@@ -43,6 +43,18 @@ const de = {
   testimonials: {
     starsLabel: 'Bewertung'
   },
+  effects: {
+    viewAll: 'Alle Verwandlungen ansehen',
+    galleryKicker: 'Verwandlungsgalerie',
+    galleryPageTitle: 'Alle Happy Paws Verwandlungen',
+    galleryPageDescription:
+      'Hier finden Sie künftig die vollständige Galerie der Pflegeergebnisse. Dieser Bereich wird gerade vorbereitet.',
+    galleryEmptyTitle: 'Galerie in Vorbereitung',
+    galleryEmptyDescription:
+      'Die Unterseite ist bereit, die Verwandlungsfotos werden im nächsten Schritt hinzugefügt.',
+    backToEffects: 'Zurück zum Ergebnisbereich',
+    backToHome: 'Zurück zur Startseite'
+  },
   quiz: {
     subtitle: 'Beratungsquiz',
     thinkingPrefix: 'Happy Paws Assistent',

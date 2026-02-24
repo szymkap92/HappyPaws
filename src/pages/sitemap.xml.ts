@@ -1,14 +1,17 @@
 import type { APIRoute } from 'astro';
+import { effectsShowcasePaths, LANGUAGES } from '@/lib/i18n';
 
-const LANG_PATHS = ['/pl/', '/en/', '/de/'] as const;
+const HOME_PATHS = ['/pl/', '/en/', '/de/'] as const;
+const EFFECTS_PATHS = LANGUAGES.map((lang) => effectsShowcasePaths[lang]);
+const ALL_PATHS = [...HOME_PATHS, ...EFFECTS_PATHS];
 
 export const prerender = true;
 
 export const GET: APIRoute = ({ site }) => {
   const base = site ?? new URL('https://happypawsanna.com');
-  const lastmod = '2025-02-23T00:00:00Z';
+  const lastmod = '2026-02-24T00:00:00Z';
 
-  const urls = LANG_PATHS.map((path) => {
+  const urls = ALL_PATHS.map((path) => {
     const loc = new URL(path, base).toString();
     return `<url><loc>${loc}</loc><lastmod>${lastmod}</lastmod></url>`;
   }).join('');
@@ -24,4 +27,3 @@ ${urls}
     }
   });
 };
-

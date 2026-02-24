@@ -7,27 +7,36 @@ interface Props {
   lang: Lang;
   title: string;
   description: string;
+  localizedPaths?: Record<Lang, string>;
 }
 
-const { lang, title, description } = Astro.props;
+const { lang, title, description, localizedPaths } = Astro.props;
 const messages = getMessages(lang);
 const siteUrl = Astro.site ?? new URL('https://happypawsanna.com');
-const canonical = new URL(`/${lang}/`, siteUrl).toString();
+
+const defaultLocalizedPaths: Record<Lang, string> = {
+  pl: '/pl/',
+  en: '/en/',
+  de: '/de/'
+};
+
+const activeLocalizedPaths = localizedPaths ?? defaultLocalizedPaths;
+const canonical = new URL(activeLocalizedPaths[lang], siteUrl).toString();
 const hreflangLinks = LANGUAGES.map((code) => ({
   code,
-  href: new URL(`/${code}/`, siteUrl).toString()
+  href: new URL(activeLocalizedPaths[code], siteUrl).toString()
 }));
-const xDefaultHref = new URL('/pl/', siteUrl).toString();
+const xDefaultHref = new URL(activeLocalizedPaths.pl, siteUrl).toString();
 
 const ogImageUrl = new URL('/images/og-happy-paws.png', siteUrl).toString();
 
-const seoDescription = siteData.seo[lang].description;
+const seoDescription = description;
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'PetGrooming',
   name: siteData.brandName,
-  url: new URL(`/${lang}/`, siteUrl).toString(),
+  url: canonical,
   description: seoDescription,
   image: new URL('/icons/happy-paws-logo.svg', siteUrl).toString(),
   telephone: siteData.phone,

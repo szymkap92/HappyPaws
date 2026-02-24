@@ -1,8 +1,8 @@
 ---
 import BeforeAfterCard from '@/components/BeforeAfterCard.astro';
-import { galleryPairs } from '@/data/gallery';
+import { homepageGalleryPairs } from '@/data/gallery';
 import { siteData, t } from '@/data/site';
-import type { Lang, Messages } from '@/lib/i18n';
+import { getEffectsShowcasePath, type Lang, type Messages } from '@/lib/i18n';
 
 interface Props {
   lang: Lang;
@@ -10,6 +10,7 @@ interface Props {
 }
 
 const { lang, messages } = Astro.props;
+const effectsShowcasePath = getEffectsShowcasePath(lang);
 ---
 
 <section id="effects" class="section-wrap bg-[#f6eee7] text-[#2b1a14]" data-section>
@@ -20,7 +21,16 @@ const { lang, messages } = Astro.props;
     </div>
 
     <div class="relative mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {galleryPairs.map((pair) => <BeforeAfterCard pair={pair} lang={lang} messages={messages} />)}
+      {homepageGalleryPairs.map((pair) => <BeforeAfterCard pair={pair} lang={lang} messages={messages} />)}
+    </div>
+
+    <div class="mt-8 flex justify-center">
+      <a
+        href={effectsShowcasePath}
+        class="btn-secondary min-h-[52px] w-full max-w-md px-7 text-center sm:w-auto"
+      >
+        {messages.effects.viewAll}
+      </a>
     </div>
   </div>
 </section>

@@ -1,0 +1,117 @@
+---
+import BeforeAfterCard from '@/components/BeforeAfterCard.astro';
+import FloatingQuizCTA from '@/components/FloatingQuizCTA.astro';
+import Navbar from '@/components/Navbar.astro';
+import QuizModal from '@/components/QuizModal.astro';
+import { allGalleryPairs } from '@/data/gallery';
+import { siteData, t } from '@/data/site';
+import MainLayout from '@/layouts/MainLayout.astro';
+import {
+  effectsShowcasePaths,
+  effectsShowcaseSlugs,
+  LANGUAGES,
+  getMessages,
+  type Lang
+} from '@/lib/i18n';
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({
+    params: {
+      lang,
+      slug: effectsShowcaseSlugs[lang]
+    }
+  }));
+}
+
+const lang = Astro.params.lang as Lang;
+const messages = getMessages(lang);
+const seo = siteData.seoEffects[lang];
+const year = new Date().getFullYear();
+const footerCopy = {
+  pl: {
+    tagline: 'Spokojna, premium pielęgnacja psów',
+    location: 'Dębica 39-200',
+    quick: 'Szybki kontakt'
+  },
+  en: {
+    tagline: 'Calm premium dog grooming',
+    location: 'Debica 39-200',
+    quick: 'Quick contact'
+  },
+  de: {
+    tagline: 'Ruhige Premium-Hundepflege',
+    location: 'Debica 39-200',
+    quick: 'Schneller Kontakt'
+  }
+}[lang];
+---
+
+<MainLayout
+  lang={lang}
+  title={seo.title}
+  description={seo.description}
+  localizedPaths={effectsShowcasePaths}
+>
+  <Navbar lang={lang} messages={messages} phone={siteData.phone} />
+
+  <main id="content" class="relative z-10">
+    <section class="section-wrap">
+      <div class="container-shell">
+        <div class="mx-auto max-w-4xl text-center">
+          <p class="section-kicker">{messages.effects.galleryKicker}</p>
+          <h1 class="section-heading mt-4">{messages.effects.galleryPageTitle}</h1>
+          <p class="section-copy mx-auto">{t(siteData.effectsSection.description, lang)}</p>
+        </div>
+
+        <div class="relative mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {allGalleryPairs.map((pair) => <BeforeAfterCard pair={pair} lang={lang} messages={messages} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative z-10 border-t border-[rgba(248,212,218,0.2)] bg-[rgba(13,8,7,0.9)] py-10 sm:py-12">
+    <div class="container-shell">
+      <div class="mx-auto max-w-6xl rounded-[2rem] border border-[var(--line)] bg-[rgba(24,15,12,0.78)] px-6 py-7 backdrop-blur sm:px-8 sm:py-8">
+        <div class="flex flex-col items-center gap-3 text-center">
+          <p class="font-display text-4xl text-[var(--text-primary)] sm:text-5xl">{siteData.brandName}</p>
+          <p class="max-w-2xl text-sm text-[var(--text-secondary)]">{footerCopy.tagline}</p>
+        </div>
+
+        <div class="mt-8 grid gap-5 border-t border-[var(--line)] pt-6 text-sm text-[var(--text-muted)] sm:grid-cols-3 sm:items-center">
+          <p class="text-center sm:text-left">{t(siteData.footer.note, lang)}</p>
+          <p class="text-center uppercase tracking-[0.12em]">{footerCopy.location}</p>
+          <p class="text-center sm:text-right">
+            {footerCopy.quick}: <a class="text-[var(--text-secondary)] hover:text-[var(--text-primary)]" href={`tel:${siteData.phone.replace(/\s+/g, '')}`}>{siteData.phone}</a>
+          </p>
+        </div>
+
+        <p class="mt-6 text-center text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">© {year} {siteData.brandName}</p>
+      </div>
+    </div>
+  </footer>
+
+  <FloatingQuizCTA lang={lang} />
+  <QuizModal lang={lang} messages={messages} phone={siteData.phone} />
+</MainLayout>
+
+<script>
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-ba-card]'));
+
+  cards.forEach((card) => {
+    if (card.dataset.baInitialized === 'true') return;
+    card.dataset.baInitialized = 'true';
+
+    const slider = card.querySelector<HTMLInputElement>('[data-ba-slider]');
+    const viewport = card.querySelector<HTMLElement>('[data-ba-viewport]');
+
+    if (!slider || !viewport) return;
+
+    const update = () => {
+      viewport.style.setProperty('--position', `${slider.value}%`);
+    };
+
+    slider.addEventListener('input', update, { passive: true });
+    update();
+  });
+</script>
