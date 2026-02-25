@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
 import MobileMenu from '@/components/MobileMenu.astro';
 import type { Lang, Messages } from '@/lib/i18n';
+import { siteData } from '@/data/site';
 import logoImage from '@/assets/images/brand/logo.jpg';
 
 interface Props {
@@ -54,6 +55,46 @@ const basePath = `/${lang}/`;
         >
           {phone}
         </a>
+        <div class="flex items-center gap-1" role="list" aria-label="Media społecznościowe">
+          <a
+            href={siteData.social.instagram}
+            role="listitem"
+            aria-label="Instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+          >
+            <svg viewBox="0 0 24 24" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+              <circle cx="12" cy="12" r="4"></circle>
+              <circle cx="17.3" cy="6.7" r="1"></circle>
+            </svg>
+          </a>
+          <a
+            href={siteData.social.facebook}
+            role="listitem"
+            aria-label="Facebook"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+          >
+            <svg viewBox="0 0 24 24" class="h-[15px] w-[15px]" fill="currentColor" aria-hidden="true">
+              <path d="M13.5 9H16V6h-2.5C10.9 6 9 7.9 9 10.5V13H7v3h2v6h3v-6h2.5l.8-3H12v-2.5c0-.9.6-1.5 1.5-1.5Z"></path>
+            </svg>
+          </a>
+          <a
+            href={siteData.social.tiktok}
+            role="listitem"
+            aria-label="TikTok"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+          >
+            <svg viewBox="0 0 24 24" class="h-[15px] w-[15px]" fill="currentColor" aria-hidden="true">
+              <path d="M15 4c.5 1.7 1.8 3 3.5 3.5V10c-1.3 0-2.5-.4-3.5-1.1v5.8c0 3-2.4 5.3-5.4 5.3S4.2 17.7 4.2 14.7s2.4-5.3 5.4-5.3c.3 0 .6 0 .9.1v2.8c-.3-.1-.6-.2-.9-.2-1.4 0-2.6 1.1-2.6 2.6s1.2 2.6 2.6 2.6 2.6-1.1 2.6-2.6V4H15Z"></path>
+            </svg>
+          </a>
+        </div>
         <a
           href={`${basePath}#contact`}
           class="inline-flex items-center justify-center rounded-lg border border-[rgba(248,212,218,0.44)] bg-transparent px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-primary)] transition duration-300 hover:border-[rgba(248,212,218,0.72)] hover:bg-[rgba(233,181,189,0.22)] hover:shadow-[0_10px_24px_rgba(233,181,189,0.2)]"
