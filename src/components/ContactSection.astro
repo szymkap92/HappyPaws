@@ -8,15 +8,20 @@ interface Props {
 }
 
 const { lang, messages } = Astro.props;
-const web3FormsKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY ?? '';
-const formspreeEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT ?? 'https://formspree.io/f/mbdawlrw';
-const hasFormProvider = Boolean(web3FormsKey || formspreeEndpoint);
+const formspreeEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT?.trim() || 'https://formspree.io/f/mbdawlrv';
+const hasFormProvider = Boolean(formspreeEndpoint);
 const missingFieldMessage =
   lang === 'pl'
     ? 'Uzupełnij wymagane pola i podaj poprawny numer telefonu.'
     : lang === 'en'
       ? 'Please complete required fields and provide a valid phone number.'
       : 'Bitte Pflichtfelder ausfüllen und eine gültige Telefonnummer angeben.';
+const phoneInvalidMessage =
+  lang === 'pl'
+    ? 'Podaj poprawny numer telefonu (9-15 cyfr).'
+    : lang === 'en'
+      ? 'Please provide a valid phone number (9-15 digits).'
+      : 'Bitte geben Sie eine gueltige Telefonnummer ein (9-15 Ziffern).';
 const socialLabels = {
   pl: {
     instagram: 'Instagram',
@@ -145,9 +150,9 @@ const mapEmbedUrl = 'https://maps.google.com/maps?q=D%C4%99bica%2039-200&t=&z=13
           id="contact-form"
           data-contact-form
           data-lang={lang}
-          data-web3-key={web3FormsKey}
           data-formspree-endpoint={formspreeEndpoint}
           data-missing-fields-message={missingFieldMessage}
+          data-phone-invalid-message={phoneInvalidMessage}
           data-success-message={messages.form.success}
           data-error-message={messages.form.error}
           data-config-missing-message={messages.form.configMissing}
@@ -174,8 +179,11 @@ const mapEmbedUrl = 'https://maps.google.com/maps?q=D%C4%99bica%2039-200&t=&z=13
                 type="tel"
                 name="phone"
                 autocomplete="tel"
+                aria-describedby="phone-error"
+                aria-invalid="false"
                 required
               />
+              <p id="phone-error" data-phone-error class="hidden text-xs text-[var(--error)]" role="alert"></p>
             </label>
           </div>
 
@@ -260,23 +268,66 @@ const mapEmbedUrl = 'https://maps.google.com/maps?q=D%C4%99bica%2039-200&t=&z=13
   });
 
   if (form && status) {
-    const web3Key = form.dataset.web3Key?.trim() ?? '';
     const formspree = form.dataset.formspreeEndpoint?.trim() ?? '';
+    const hasProvider = Boolean(formspree);
     const missingFieldsMessage =
       form.dataset.missingFieldsMessage ?? 'Please complete required fields and provide a valid phone number.';
+    const phoneValidationMessage =
+      form.dataset.phoneInvalidMessage ?? 'Please provide a valid phone number (9-15 digits).';
     const successMessage = form.dataset.successMessage ?? 'Message sent.';
     const errorMessage = form.dataset.errorMessage ?? 'Message could not be sent.';
     const configMissingMessage =
       form.dataset.configMissingMessage ?? 'Configure form provider in env to enable submissions.';
+    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const phoneInput = form.querySelector<HTMLInputElement>('input[name="phone"]');
+    const phoneError = form.querySelector<HTMLElement>('[data-phone-error]');
+    let isSubmitting = false;
+
+    const setStatus = (message: string, kind: 'muted' | 'success' | 'error') => {
+      const classMap = {
+        muted: 'text-sm text-[var(--text-muted)]',
+        success: 'text-sm text-[var(--success)]',
+        error: 'text-sm text-[var(--error)]'
+      };
+
+      status.className = classMap[kind];
+      status.textContent = message;
+    };
+
+    const clearPhoneError = () => {
+      if (!phoneInput || !phoneError) return;
+      phoneInput.setAttribute('aria-invalid', 'false');
+      phoneError.classList.add('hidden');
+      phoneError.textContent = '';
+    };
+
+    const setPhoneError = (message: string) => {
+      if (!phoneInput || !phoneError) return;
+      phoneInput.setAttribute('aria-invalid', 'true');
+      phoneError.textContent = message;
+      phoneError.classList.remove('hidden');
+    };
+
+    const isPhoneValid = (value: string) => {
+      const digitsOnly = value.replace(/\D/g, '');
+      return digitsOnly.length >= 9 && digitsOnly.length <= 15;
+    };
+
+    phoneInput?.addEventListener('input', () => {
+      if (isPhoneValid(phoneInput.value.trim())) {
+        clearPhoneError();
+      }
+    });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      status.className = 'text-sm text-[var(--text-muted)]';
-      status.textContent = '';
+      if (isSubmitting) return;
 
-      if (!web3Key && !formspree) {
-        status.className = 'text-sm text-[var(--error)]';
-        status.textContent = configMissingMessage;
+      setStatus('', 'muted');
+      clearPhoneError();
+
+      if (!hasProvider) {
+        setStatus(configMissingMessage, 'error');
         return;
       }
 
@@ -289,52 +340,64 @@ const mapEmbedUrl = 'https://maps.google.com/maps?q=D%C4%99bica%2039-200&t=&z=13
       const dogName = String(formData.get('dogName') ?? '').trim();
       const message = String(formData.get('message') ?? '').trim();
 
-      const validPhone = /^[+]?[-\d\s()]{7,20}$/.test(phone);
-      if (!name || !dogName || !message || message.length < 10 || !validPhone) {
-        status.className = 'text-sm text-[var(--error)]';
-        status.textContent = missingFieldsMessage;
+      if (!name || !dogName || !message || message.length < 10) {
+        setStatus(missingFieldsMessage, 'error');
         return;
       }
 
-      let endpoint = '';
-      let payload = formData;
-      const headers: Record<string, string> = {};
-
-      if (formspree) {
-        endpoint = formspree;
-        headers.Accept = 'application/json';
-      } else if (web3Key) {
-        endpoint = 'https://api.web3forms.com/submit';
-        payload.append('access_key', web3Key);
-        payload.append('subject', 'Nowa wiadomość ze strony Happy Paws');
-        payload.append('from_name', 'Happy Paws Kontakt');
-      } else {
-        status.className = 'text-sm text-[var(--error)]';
-        status.textContent = configMissingMessage;
+      if (!isPhoneValid(phone)) {
+        setPhoneError(phoneValidationMessage);
         return;
+      }
+
+      isSubmitting = true;
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.setAttribute('aria-disabled', 'true');
+        submitButton.setAttribute('aria-busy', 'true');
       }
 
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch(formspree, {
           method: 'POST',
-          body: payload,
-          headers
+          body: formData,
+          headers: {
+            Accept: 'application/json'
+          }
         });
 
-        const json = await response.json().catch(() => null);
-        const isSuccess =
-          response.ok && (formspree ? true : Boolean(json && (json.success === true || json.message)));
+        const json = (await response.json().catch(() => null)) as
+          | {
+              ok?: boolean;
+              success?: boolean;
+              message?: string;
+              error?: string;
+              errors?: Array<{ message?: string }>;
+            }
+          | null;
+        const apiError =
+          Array.isArray(json?.errors) && json.errors.length > 0
+            ? json.errors.map((item) => item.message).filter(Boolean).join(' ')
+            : json?.error;
+        const isSuccess = response.ok && (json === null || json.ok === true || json.success === true);
 
         if (!isSuccess) {
-          throw new Error('Form submission failed');
+          throw new Error(apiError || errorMessage);
         }
 
         form.reset();
-        status.className = 'text-sm text-[var(--success)]';
-        status.textContent = successMessage;
-      } catch {
-        status.className = 'text-sm text-[var(--error)]';
-        status.textContent = errorMessage;
+        clearPhoneError();
+        setStatus(successMessage, 'success');
+      } catch (error) {
+        const messageText = error instanceof Error && error.message ? error.message : errorMessage;
+        setStatus(messageText, 'error');
+      } finally {
+        isSubmitting = false;
+        if (submitButton) {
+          submitButton.disabled = !hasProvider;
+          submitButton.setAttribute('aria-disabled', !hasProvider ? 'true' : 'false');
+          submitButton.removeAttribute('aria-busy');
+        }
       }
     });
   }
