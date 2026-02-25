@@ -25,7 +25,18 @@ const basePath = `/${lang}/`;
       class="mt-3 flex h-[5.5rem] items-center justify-between rounded-2xl border border-transparent bg-[rgba(16,10,8,0.52)] px-3 transition duration-300 md:h-[6.5rem] md:px-4"
     >
       <a href={basePath} class="inline-flex items-center gap-3" aria-label="Przejdz do strony glownej Happy Paws">
-        <Image src={logoImage} alt="Happy Paws salon pielegnacji psow logo" class="h-[4.5rem] w-auto md:h-[5.5rem]" loading="eager" fetchpriority="high" />
+        <Image
+          src={logoImage}
+          alt="Happy Paws salon pielegnacji psow logo"
+          widths={[96, 128, 176, 224]}
+          sizes="(max-width: 768px) 96px, 176px"
+          format="webp"
+          quality={74}
+          class="h-[4.5rem] w-auto md:h-[5.5rem]"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
       </a>
 
       <nav class="hidden items-center gap-5 lg:flex" aria-label="Main navigation">

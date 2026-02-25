@@ -218,6 +218,19 @@ section {
   }
 }
 
+@media (max-width: 767px) {
+  .noise-overlay {
+    display: none;
+  }
+
+  [data-navbar],
+  [data-navbar-shell],
+  [data-quiz-backdrop],
+  [data-mobile-menu] > button {
+    backdrop-filter: none !important;
+  }
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,

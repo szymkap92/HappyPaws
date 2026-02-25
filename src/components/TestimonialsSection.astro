@@ -37,12 +37,12 @@ const viewAllLabel = {
                   </svg>
                 ))}
               </div>
-              <img src="/icons/google-g.svg" alt="Google" class="h-4 w-4 shrink-0" loading="lazy" />
+              <img src="/icons/google-g.svg" alt="Google" class="h-4 w-4 shrink-0" loading="lazy" decoding="async" width="16" height="16" />
             </div>
             <p class="mt-4 flex-1 text-sm leading-relaxed text-[rgba(69,44,37,0.84)]">"{item.quote[lang]}"</p>
             <p class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f1d17]">
               {item.petName} - <span class="text-[rgba(83,54,46,0.7)]">{item.guardian}</span>
-              <img src="/icons/google-g.svg" alt="" class="h-3.5 w-3.5 shrink-0" loading="lazy" aria-hidden="true" />
+              <img src="/icons/google-g.svg" alt="" class="h-3.5 w-3.5 shrink-0" loading="lazy" decoding="async" width="14" height="14" aria-hidden="true" />
             </p>
           </article>
         ))
@@ -55,7 +55,7 @@ const viewAllLabel = {
         href="#"
         class="inline-flex items-center gap-2 rounded-full border border-[rgba(122,80,70,0.26)] bg-[rgba(255,255,255,0.82)] px-5 py-2.5 text-sm font-semibold text-[rgba(66,43,36,0.86)] transition hover:border-[rgba(122,80,70,0.42)] hover:bg-[rgba(255,255,255,0.95)]"
       >
-        <img src="/icons/google-g.svg" alt="" class="h-4 w-4 shrink-0" loading="lazy" aria-hidden="true" />
+        <img src="/icons/google-g.svg" alt="" class="h-4 w-4 shrink-0" loading="lazy" decoding="async" width="16" height="16" aria-hidden="true" />
         {viewAllLabel}
       </a>
     </div>
