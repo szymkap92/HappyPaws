@@ -62,9 +62,9 @@ export const siteData = {
       de: 'Über mich'
     },
     description: {
-      pl: 'Mam na imię Anna i prowadzę Happy Paws - miejsce stworzone z myślą o spokojnej, bezpiecznej pielęgnacji psów. Zależy mi, aby każda wizyta przebiegała bez pośpiechu i w przyjaznej atmosferze. Dobieram pielęgnację do rodzaju sierści, potrzeb psa i jego temperamentu, tak aby efekt był piękny, ale też komfortowy dla pupila.',
-      en: 'My name is Anna and I run Happy Paws, a place created for calm and safe dog grooming. Every visit is unhurried and friendly. I tailor care to coat type, needs and temperament, so the effect is beautiful and comfortable for your dog.',
-      de: 'Ich heiße Anna und führe Happy Paws, einen Ort für ruhige und sichere Hundepflege. Jeder Termin läuft ohne Hektik in freundlicher Atmosphäre ab. Ich passe die Pflege an Felltyp, Bedürfnisse und Temperament an, damit das Ergebnis schön und angenehm ist.'
+      pl: 'Mam na imię Anna, jestem certyfikowaną Groomerką i prowadzę Happy Paws - spokojną przestrzeń pielęgnacji psów w Dębicy, stworzoną z myślą o komforcie pupila i opiekuna. Każdą wizytę planuję bez pośpiechu. Dobieram pielęgnację do rodzaju sierści, temperamentu psa i oczekiwanego efektu, żeby metamorfoza była estetyczna, ale przede wszystkim bezpieczna. Wspólnie ustalamy najlepszy plan pielęgnacji - od pierwszej wizyty szczeniaka po regularną pielęgnację dorosłych psów.',
+      en: 'My name is Anna. I am a certified groomer and I run Happy Paws – a calm dog grooming space in Debica designed around comfort for both pets and owners. Every appointment is unhurried. I tailor grooming to coat type, dog temperament and expected result, so the final look is elegant and safe. Together we choose the best care plan - from first puppy visits to regular maintenance grooming.',
+      de: 'Ich heiße Anna, bin eine zertifizierte Groomer und führe Happy Paws – einen ruhigen Hundepflegeort in Debica, der auf den Komfort von Hund und Halter ausgerichtet ist. Jeder Termin verläuft ohne Hektik. Ich passe die Pflege an Felltyp, Temperament und gewünschtes Ergebnis an, damit der Look schön und sicher ist. Gemeinsam wählen wir den passenden Pflegeplan - vom ersten Welpentermin bis zur regelmäßigen Fellpflege.'
     },
     points: [
       {
