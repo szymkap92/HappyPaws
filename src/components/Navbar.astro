@@ -22,18 +22,18 @@ const basePath = `/${lang}/`;
   <div class="container-shell">
     <div
       data-navbar-shell
-      class="mt-3 flex h-[5.5rem] items-center justify-between rounded-2xl border border-transparent bg-transparent px-3 transition duration-300 md:h-[6.5rem] md:px-4"
+      class="mt-3 flex h-[5.5rem] items-center justify-between rounded-2xl border border-transparent bg-[rgba(16,10,8,0.52)] px-3 transition duration-300 md:h-[6.5rem] md:px-4"
     >
       <a href={basePath} class="inline-flex items-center gap-3" aria-label="Przejdz do strony glownej Happy Paws">
         <Image src={logoImage} alt="Happy Paws salon pielegnacji psow logo" class="h-[4.5rem] w-auto md:h-[5.5rem]" loading="eager" fetchpriority="high" />
       </a>
 
       <nav class="hidden items-center gap-5 lg:flex" aria-label="Main navigation">
-        <a data-nav-link="about" href={`${basePath}#about`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.about}</a>
-        <a data-nav-link="services" href={`${basePath}#services`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.services}</a>
-        <button data-open-quiz type="button" class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.matchCare}</button>
-        <a data-nav-link="effects" href={`${basePath}#effects`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.effects}</a>
-        <a data-nav-link="contact" href={`${basePath}#contact`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] opacity-90 transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.contact}</a>
+        <a data-nav-link="about" href={`${basePath}#about`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.about}</a>
+        <a data-nav-link="services" href={`${basePath}#services`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.services}</a>
+        <button data-open-quiz type="button" class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.matchCare}</button>
+        <a data-nav-link="effects" href={`${basePath}#effects`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.effects}</a>
+        <a data-nav-link="contact" href={`${basePath}#contact`} class="border-b border-transparent px-1 py-2 text-[15px] text-[var(--text-secondary)] transition hover:border-[rgba(233,181,189,0.45)] hover:text-[var(--text-primary)]">{messages.nav.contact}</a>
       </nav>
 
       <div class="hidden items-center gap-3 lg:flex">
@@ -124,7 +124,7 @@ const basePath = `/${lang}/`;
 
 <style>
   [data-navbar].is-scrolled {
-    background: rgba(11, 7, 6, 0.35);
+    background: rgba(11, 7, 6, 0.5);
     backdrop-filter: blur(4px);
   }
 

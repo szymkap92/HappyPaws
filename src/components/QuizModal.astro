@@ -71,7 +71,7 @@ const quizPayload = {
 };
 ---
 
-<div data-quiz-modal class="pointer-events-none fixed inset-0 z-[220] opacity-0 transition duration-300" aria-hidden="true">
+<div data-quiz-modal class="pointer-events-none fixed inset-0 z-[220] opacity-0 transition duration-300" aria-hidden="true" hidden inert>
   <button data-quiz-backdrop class="absolute inset-0 bg-[rgba(7,4,3,0.92)] backdrop-blur-[6px]" aria-label={modalContent.close}></button>
 
   <div class="absolute inset-0 overflow-y-auto">
@@ -88,7 +88,7 @@ const quizPayload = {
 
       <header class="relative z-10 flex items-start justify-between gap-4">
         <div>
-          <p class="section-kicker border-[rgba(248,212,218,0.3)] bg-[rgba(36,22,18,0.62)] text-[rgba(247,224,228,0.84)]">{modalContent.subtitle}</p>
+          <p class="section-kicker border-[rgba(248,212,218,0.3)] bg-[rgba(28,18,14,0.78)] text-[var(--text-secondary)]">{modalContent.subtitle}</p>
           <h2 id="quiz-title" class="mt-3 font-display text-4xl text-[var(--text-primary)] sm:text-5xl">{modalContent.title}</h2>
         </div>
         <button
@@ -506,12 +506,16 @@ const quizPayload = {
   };
 
   const openModal = () => {
-    if (!modal) return;
+    if (!modal || isOpen) return;
     isOpen = true;
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
-    modal.classList.remove('pointer-events-none', 'opacity-0');
+    modal.removeAttribute('hidden');
+    modal.removeAttribute('inert');
     modal.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => {
+      modal.classList.remove('pointer-events-none', 'opacity-0');
+    });
 
     document.body.classList.add('overflow-hidden');
     resetQuiz();
@@ -523,10 +527,14 @@ const quizPayload = {
   };
 
   const closeModal = () => {
-    if (!modal) return;
+    if (!modal || !isOpen) return;
     isOpen = false;
     modal.setAttribute('aria-hidden', 'true');
+    modal.setAttribute('inert', '');
     modal.classList.add('pointer-events-none', 'opacity-0');
+    window.setTimeout(() => {
+      if (!isOpen) modal.setAttribute('hidden', '');
+    }, 300);
     document.body.classList.remove('overflow-hidden');
     previousFocus?.focus();
   };
