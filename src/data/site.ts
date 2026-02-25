@@ -15,8 +15,14 @@ export const siteData = {
   brandName: 'Happy Paws',
   groomerName: 'Anna',
   phone: '+48 000 000 000',
+  email: 'happypawshundesalon@gmail.com',
   location: 'Dębica 39-200',
   hours: '8:00 - 19:00',
+  social: {
+    instagram: 'https://www.instagram.com/happypaws_hundesalon/',
+    facebook: 'https://www.facebook.com/HappyPawsHundesalon',
+    tiktok: 'https://www.tiktok.com/@anczix2'
+  },
   hero: {
     eyebrow: {
       pl: 'Spokojna i profesjonalna pielęgnacja psów',
