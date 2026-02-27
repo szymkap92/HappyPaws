@@ -23,18 +23,21 @@ const year = new Date().getFullYear();
 const footerCopy = {
   pl: {
     tagline: 'Spokojna, premium pielęgnacja psów',
-    location: 'Dębica 39-200',
-    quick: 'Szybki kontakt'
+    location: 'Eichendorffstr. 2, 74177 Bad Friedrichshall',
+    quick: 'Szybki kontakt',
+    rights: 'Wszelkie prawa zastrzeżone.'
   },
   en: {
     tagline: 'Calm premium dog grooming',
-    location: 'Debica 39-200',
-    quick: 'Quick contact'
+    location: 'Eichendorffstr. 2, 74177 Bad Friedrichshall',
+    quick: 'Quick contact',
+    rights: 'All rights reserved.'
   },
   de: {
     tagline: 'Ruhige Premium-Hundepflege',
-    location: 'Debica 39-200',
-    quick: 'Schneller Kontakt'
+    location: 'Eichendorffstr. 2, 74177 Bad Friedrichshall',
+    quick: 'Schneller Kontakt',
+    rights: 'Alle Rechte vorbehalten.'
   }
 }[lang];
 ---
@@ -67,7 +70,7 @@ const footerCopy = {
           </p>
         </div>
 
-        <p class="mt-6 text-center text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">© {year} {siteData.brandName}</p>
+        <p class="mt-6 text-center text-xs text-[var(--text-muted)]">® {year} Anna Kaput – Happy Paws. {footerCopy.rights}</p>
       </div>
     </div>
   </footer>

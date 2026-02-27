@@ -16,7 +16,7 @@ export const siteData = {
   groomerName: 'Anna',
   phone: '+48 000 000 000',
   email: 'happypawshundesalon@gmail.com',
-  location: 'Dębica 39-200',
+  location: 'Eichendorffstr. 2, 74177 Bad Friedrichshall',
   hours: '8:00 - 19:00',
   social: {
     instagram: 'https://www.instagram.com/happypaws_hundesalon/',

@@ -17,10 +17,19 @@ const basePath = `/${lang}/`;
   ></div>
   <div class="pointer-events-none absolute -left-24 top-10 hidden h-72 w-72 rounded-full bg-[rgba(233,181,189,0.22)] blur-3xl sm:block" aria-hidden="true"></div>
   <div class="pointer-events-none absolute -right-20 top-0 hidden h-72 w-72 rounded-full bg-[rgba(148,99,86,0.28)] blur-3xl sm:block" aria-hidden="true"></div>
+
+  <!-- 1. ciemna nakładka startowa — znika gdy światło się włącza -->
+  <span class="hero-dark" aria-hidden="true"></span>
+  <!-- 2. blask rozjaśnienia — pojawia się przy kolizji dotek -->
+  <span class="hero-light" aria-hidden="true"></span>
+  <!-- 3. dotki — białe "żarówki" lecące od krawędzi do środka -->
+  <span class="hero-dot-left" aria-hidden="true"></span>
+  <span class="hero-dot-right" aria-hidden="true"></span>
+
   <div class="container-shell">
     <div class="mx-auto max-w-4xl text-center">
       <div class="reveal-up">
-        <p class="section-kicker mx-auto">
+        <p class="section-kicker mx-auto !border-0">
           {t(siteData.hero.eyebrow, lang)}
         </p>
         <h1 class="mt-7 font-display text-5xl font-semibold leading-[1.04] tracking-tight text-sand sm:text-6xl lg:text-7xl">
@@ -40,3 +49,126 @@ const basePath = `/${lang}/`;
     </div>
   </div>
 </section>
+
+<style>
+  /*
+   * Hero light-switch effect
+   *
+   * Kolejność warstw (z-index w sekcji position:relative):
+   *   1 — hero-dark   : dodatkowe przyciemnienie startowe (pojawia się od razu, znika przy kolizji)
+   *   1 — hero-light  : blask rozjaśnienia (pojawia się przy kolizji, zostaje)
+   *   2 — container-shell (tekst) : zawsze ponad overlayami
+   *   3 — hero-dot-*  : białe dotki-żarówki, ponad wszystkim
+   *
+   * Oś czasu (delay 0.8s, duration 2.4s):
+   *   0–10%  dotki pojawiają się przy krawędziach, sekcja ciemna (hero-dark widoczny)
+   *   10–62% dotki lecą do środka
+   *   62–70% KOLIZJA: dotki gasną, hero-dark znika, hero-light rozbłyska (peak)
+   *   70–100% dotki niewidoczne, sekcja zostaje jasna (hero-light osiada ~0.78)
+   *
+   * prefers-reduced-motion: global animation:none !important wyłącza wszystko.
+   */
+
+  /* ── tekst zawsze ponad nakładkami ── */
+  .container-shell {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── 1. ciemna nakładka startowa ──
+     Sprawia że sekcja jest wyraźnie ciemniejsza przed "klikiem",
+     co daje kontrast i dramatyzm w momencie włączenia światła.          */
+  .hero-dark {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    background: rgba(4, 2, 1, 0.52);
+    will-change: opacity;
+    animation: heroDarkFade 2.4s ease-in-out 0.8s both;
+  }
+
+  @keyframes heroDarkFade {
+    0%,  55% { opacity: 1; }   /* ciemno podczas lotu dotek   */
+    70%      { opacity: 0; }   /* znika przy kolizji          */
+    100%     { opacity: 0; }   /* zostaje wyłączona           */
+  }
+
+  /* ── 2. blask "włączonego światła" ── */
+  .hero-light {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    /* ciepłe białe światło — centrum przy h1, zanika ku krawędziom */
+    background: radial-gradient(
+      ellipse 92% 78% at 50% 44%,
+      rgba(255, 253, 248, 0.92) 0%,
+      rgba(255, 244, 232, 0.72) 20%,
+      rgba(248, 224, 200, 0.44) 44%,
+      rgba(220, 185, 158, 0.18) 66%,
+      transparent 82%
+    );
+    opacity: 0;
+    will-change: opacity;
+    animation: heroLightReveal 2.4s ease-out 0.8s both;
+  }
+
+  @keyframes heroLightReveal {
+    0%,  58% { opacity: 0;    }   /* ciemno podczas lotu         */
+    66%      { opacity: 1;    }   /* gwałtowny rozbłysk (peak)   */
+    78%      { opacity: 0.88; }   /* łagodne opadanie            */
+    100%     { opacity: 0.78; }   /* światło zostaje             */
+  }
+
+  /* ── 3. dotki — czysto białe, jak żarówki ── */
+  .hero-dot-left,
+  .hero-dot-right {
+    position: absolute;
+    top: 44%;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    /* rdzeń biały, poświata ciepło-biała */
+    background: #ffffff;
+    box-shadow:
+      0 0 10px  5px rgba(255, 255, 255, 1),
+      0 0 26px 13px rgba(255, 240, 245, 0.95),
+      0 0 64px 32px rgba(255, 215, 230, 0.60);
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform, opacity;
+    z-index: 3;
+  }
+
+  /* lewa dotka — startuje od lewej krawędzi sekcji */
+  .hero-dot-left {
+    left: 0;
+    animation: heroDotLeft 2.4s ease-in-out 0.8s both;
+  }
+
+  @keyframes heroDotLeft {
+    0%  { transform: translateX(0);                opacity: 0; }
+    10% { transform: translateX(0);                opacity: 1; }
+    62% { transform: translateX(calc(50vw - 7px)); opacity: 1; }
+    70% { transform: translateX(calc(50vw - 7px)); opacity: 0; }
+    100%{ transform: translateX(calc(50vw - 7px)); opacity: 0; }
+  }
+
+  /* prawa dotka — startuje od prawej krawędzi sekcji */
+  .hero-dot-right {
+    right: 0;
+    animation: heroDotRight 2.4s ease-in-out 0.8s both;
+  }
+
+  @keyframes heroDotRight {
+    0%  { transform: translateX(0);                opacity: 0; }
+    10% { transform: translateX(0);                opacity: 1; }
+    62% { transform: translateX(calc(-50vw + 7px));opacity: 1; }
+    70% { transform: translateX(calc(-50vw + 7px));opacity: 0; }
+    100%{ transform: translateX(calc(-50vw + 7px));opacity: 0; }
+  }
+</style>

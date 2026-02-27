@@ -378,7 +378,7 @@ const quizPayload = {
       const button = document.createElement('button');
       button.type = 'button';
       button.className =
-        'rounded-2xl border border-[var(--line)] bg-[rgba(31,19,15,0.84)] px-4 py-3 text-left text-sm text-[var(--text-secondary)] transition hover:border-[var(--line-strong)] hover:text-[var(--text-primary)] sm:text-base';
+        'rounded-lg border border-[var(--line)] bg-[rgba(31,19,15,0.84)] px-4 py-3 text-left text-sm text-[var(--text-secondary)] transition hover:border-[var(--line-strong)] hover:text-[var(--text-primary)] sm:text-base';
       button.textContent = localize(option.label);
       button.addEventListener('click', () => chooseOption(option.id));
       optionsEl.appendChild(button);
